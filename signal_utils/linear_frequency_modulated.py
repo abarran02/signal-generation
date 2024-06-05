@@ -1,4 +1,3 @@
-from decimal import Decimal
 from pathlib import Path
 
 import numpy as np
@@ -6,7 +5,7 @@ import yaml
 from numpy.typing import NDArray
 
 
-def read_input_params(filename: Path) -> tuple[Decimal, Decimal, int, Decimal, Decimal, int]:
+def read_input_params(filename: Path) -> tuple[float, float, int, float, float, int]:
     """Read radar pulse parameters from input YAML file
 
     Args:
@@ -20,15 +19,15 @@ def read_input_params(filename: Path) -> tuple[Decimal, Decimal, int, Decimal, D
 
     return input_params['pulse_width'], input_params['pri'], input_params['num_reps'], input_params['fstart'], input_params['fstop'], input_params['sample_rate']
 
-def generate_lfm(pw: Decimal, pri: Decimal, num_reps: int, fstart: Decimal, fstop: Decimal, sample_rate: int) -> NDArray[np.complex_]:
+def generate_lfm(pw: float, pri: float, num_reps: int, fstart: float, fstop: float, sample_rate: int) -> NDArray[np.complex_]:
     """Generate a Linear Frequency Modulated (LFM) pulsed wave signal
 
     Args:
-        pw (Decimal): Pulse width in seconds
-        pri (Decimal): Pulse repetition interval in seconds
+        pw (float): Pulse width in seconds
+        pri (float): Pulse repetition interval in seconds
         num_reps (int): Number of repetitions of the pulse
-        fstart (Decimal): Start frequency of the LFM pulse in Hz
-        fstop (Decimal): Stop frequency of the LFM pulse in Hz
+        fstart (float): Start frequency of the LFM pulse in Hz
+        fstop (float): Stop frequency of the LFM pulse in Hz
         sample_rate (int): The sample rate in samples per second (Hz)
 
     Returns:

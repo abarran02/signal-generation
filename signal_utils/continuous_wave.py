@@ -1,4 +1,3 @@
-from decimal import Decimal
 from pathlib import Path
 
 import numpy as np
@@ -6,7 +5,7 @@ import yaml
 from numpy.typing import NDArray
 
 
-def read_input_params(filename: Path) -> tuple[Decimal, Decimal, Decimal, int, int]:
+def read_input_params(filename: Path) -> tuple[float, float, float, int, int]:
     """Read continuous wave parameters from input YAML file
 
     Args:
@@ -21,15 +20,15 @@ def read_input_params(filename: Path) -> tuple[Decimal, Decimal, Decimal, int, i
     return input_params['frequency'], input_params['pulse_width'], input_params['pri'], input_params['num_reps'], input_params['sample_rate']
 
 
-def generate_cw_iq(frequency: Decimal, pw: Decimal, pri: Decimal, num_reps: int, sample_rate: int) -> NDArray[np.complex_]:
+def generate_cw_iq(frequency: float, pw: float, pri: float, num_reps: int, sample_rate: int) -> NDArray[np.complex_]:
     """Generate a pulsed wave signal
 
     Args:
-        frequency (Decimal): The frequency of the continuous wave in Hz
-        pw (Decimal): Pulse width in seconds
-        pri (Decimal): Pulse repetition interval in seconds
+        frequency (float): The frequency of the continuous wave in Hz
+        pw (float): Pulse width in seconds
+        pri (float): Pulse repetition interval in seconds
         num_reps (int): Number of repetitions of the pulse
-        sample_rate (Decimal): The sample rate in samples per second (Hz)
+        sample_rate (float): The sample rate in samples per second (Hz)
 
     Returns:
         np.ndarray: A numpy array of complex values representing the pulsed wave
