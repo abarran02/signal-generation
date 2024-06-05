@@ -1,0 +1,6 @@
+pulse_width: 0.001
+pri: 0.01
+num_reps: 10
+fstart: 1000
+fstop: 2000
+sample_rate: 10000
