@@ -1,2 +1,2 @@
 from . import radar_pulse
-from . import sequences
+from . import continuous_wave

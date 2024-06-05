@@ -1,0 +1,5 @@
+    frequency: 1000
+    pulse_width: 0.000001
+    pri: 0.0001
+    num_reps: 10
+    sample_rate: 1000000

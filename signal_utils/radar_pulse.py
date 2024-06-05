@@ -5,10 +5,8 @@ import numpy as np
 import yaml
 from numpy.typing import NDArray
 
-from .binary_file_ops import write_binary_iq_data
-from .filter_windows import create_fir_filter, nuttall_window
-from .generate_bpsk import generate_bpsk
-from .sequences import maximal_length_sequence
+from .common.filter_windows import create_fir_filter, nuttall_window
+from .common.generate_bpsk import generate_bpsk
 
 
 def read_input_params(filename: Path) -> tuple[int, Decimal, int, list[int], int, Decimal, int]:
@@ -18,7 +16,7 @@ def read_input_params(filename: Path) -> tuple[int, Decimal, int, list[int], int
         filename (Path): YAML file path
 
     Returns:
-        tuple of: sample_rate, bit_length, num_bits, taps, amplitude, pri, num_pulses
+        tuple: sample_rate, bit_length, num_bits, taps, amplitude, pri, num_pulses
     """
     with open(filename, 'r') as file:
         input_params = yaml.safe_load(file)
@@ -57,24 +55,3 @@ def generate_pulse(seq: NDArray[np.int_], sample_rate: int, bit_length: Decimal,
     pulse_seq = np.tile(pulse_filt, [num_pulses])
 
     return pulse_seq
-
-if __name__ == "__main__":
-    # read in the yaml input file
-    current_file_path = Path(__file__).resolve()
-    parent_dir = current_file_path.parent
-    filename = parent_dir / "radar_pulse_example.yaml"
-
-    sample_rate, bit_length, num_bits, sequence_taps, amplitude, pri, num_pulses = read_input_params(filename)
-
-    # generate the data sequence
-    seq = maximal_length_sequence(num_bits, np.array(sequence_taps))
-
-    print("Generating IQ file...")
-    pulse_seq = generate_pulse(seq, sample_rate, bit_length, pri, num_pulses)
-
-    # write the IQ data to a binary file
-    print("Saving IQ file...")
-    save_filename = "radar_pulse_example.sc16"
-    write_binary_iq_data(save_filename, np.round(amplitude * pulse_seq))
-
-    print("Complete!")
