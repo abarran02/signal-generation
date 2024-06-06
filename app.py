@@ -1,7 +1,11 @@
+from datetime import datetime
+from io import BytesIO
 
-from signal_utils import continuous_wave
-from flask import Flask, jsonify, request
-from marshmallow import Schema, fields, ValidationError
+from flask import Flask, request, send_file
+from marshmallow import Schema, ValidationError, fields
+
+import signal_utils as su
+from signal_utils.common.binary_file_ops import get_iq_bytes
 
 app = Flask(__name__)
 
@@ -18,12 +22,19 @@ def get_cw():
 
     try:
         data = schema.load(request.args)
-        pulse = continuous_wave.generate_cw_iq(data["frequency"], data["pulse_width"], data["pri"], data["num_reps"], data["sample_rate"])
+        pulse = su.continuous_wave.generate_cw_iq(data["frequency"], data["pulse_width"], data["pri"], data["num_reps"], data["sample_rate"])
+        pulse_bytes = get_iq_bytes(pulse)
 
-        return jsonify({
-            "real": pulse.real.tolist(),
-            "imag": pulse.imag.tolist()
-        })
+        # get current time for file naming
+        now = datetime.now()
+        formatted_time = now.strftime("%Y%m%d_%H%M%S")
+
+        return send_file(
+            BytesIO(pulse_bytes),
+            mimetype="application/octet-stream",
+            as_attachment=True,
+            download_name=f"cw_{formatted_time}.sc16"
+        )
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
