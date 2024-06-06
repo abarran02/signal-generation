@@ -1,3 +1,4 @@
+import math
 from pathlib import Path
 
 import numpy as np
@@ -5,54 +6,30 @@ import yaml
 from numpy.typing import NDArray
 
 
-def read_input_params(filename: Path) -> tuple[float, float, int, float, float, int]:
+def read_input_params(filename: Path) -> tuple[int, float, float, float]:
     """Read radar pulse parameters from input YAML file
 
     Args:
         filename (Path): YAML file path
 
     Returns:
-        tuple: pulse_width, pri, num_reps, fstart, fstop, sample_rate
+        tuple: sample_rate, fstart, fstop, signal_length
     """
     with open(filename, 'r') as file:
         input_params = yaml.safe_load(file)
 
-    return input_params['pulse_width'], input_params['pri'], input_params['num_reps'], input_params['fstart'], input_params['fstop'], input_params['sample_rate']
+    return input_params['sample_rate'], input_params['fstart'], input_params['fstop'], input_params['signal_length']
 
-def generate_lfm(pw: float, pri: float, num_reps: int, fstart: float, fstop: float, sample_rate: int) -> NDArray[np.complex_]:
-    """Generate a Linear Frequency Modulated (LFM) pulsed wave signal
+def generate_lfm(sample_rate: int, f_start: float, f_stop: float, signal_length: float) -> NDArray[np.complex_]:
 
-    Args:
-        pw (float): Pulse width in seconds
-        pri (float): Pulse repetition interval in seconds
-        num_reps (int): Number of repetitions of the pulse
-        fstart (float): Start frequency of the LFM pulse in Hz
-        fstop (float): Stop frequency of the LFM pulse in Hz
-        sample_rate (int): The sample rate in samples per second (Hz)
+    # calculate the number of samples in the RF signal
+    num_samples = math.floor(sample_rate * signal_length)
 
-    Returns:
-        np.ndarray: A numpy array of complex values representing the LFM pulsed wave.
-    """
-    # Number of samples per pulse
-    num_samples_pw = int(pw * sample_rate)
-    # Number of samples per pulse repetition interval
-    num_samples_pri = int(pri * sample_rate)
+    # time step
+    t = (1.0 / sample_rate) * np.arange(0, num_samples)
 
-    # Time vector for one pulse
-    t_pulse = np.linspace(0, pw, num_samples_pw, endpoint=False)
+    #v = 1i * 2.0 * M_PI * (f_start * idx * t + (f_stop - f_start) * 0.5 * idx * idx * t * t / signal_length)
 
-    # Generate the LFM pulse
-    k = (fstop - fstart) / pw  # Chirp rate
-    i_pulse = np.cos(2 * np.pi * (fstart * t_pulse + 0.5 * k * t_pulse**2))
-    q_pulse = np.sin(2 * np.pi * (fstart * t_pulse + 0.5 * k * t_pulse**2))
-    iq_pulse = i_pulse + 1j * q_pulse
+    iq = np.exp(1j * 2.0 * np.pi * (f_start * t + (f_stop - f_start) * 0.5 * t * t / signal_length))
 
-    # Create a zero array for the full PRI period
-    iq_pri = np.zeros(num_samples_pri, dtype=complex)
-    # Insert the pulse into the PRI period
-    iq_pri[:num_samples_pw] = iq_pulse
-
-    # Repeat the pulse over the number of repetitions
-    iq_waveform = np.tile(iq_pri, num_reps)
-
-    return iq_waveform
+    return iq

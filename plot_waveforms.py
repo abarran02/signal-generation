@@ -26,10 +26,10 @@ def plot_cw(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.float_]]:
     return iq_data, t
 
 def plot_lfm(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.float_]]:
-    pw, pri, num_reps, fstart, fstop, sample_rate = su.linear_frequency_modulated.read_input_params(filename)
-    iq_data = su.linear_frequency_modulated.generate_lfm(pw, pri, num_reps, fstart, fstop, sample_rate)
+    sample_rate, fstart, fstop, signal_length = su.linear_frequency_modulated.read_input_params(filename)
+    iq_data = su.linear_frequency_modulated.generate_lfm(sample_rate, fstart, fstop, signal_length)
 
-    t = np.linspace(0, pw, iq_data.shape[0])
+    t = np.linspace(0, signal_length, iq_data.shape[0])
     return iq_data, t
 
 if __name__ == "__main__":

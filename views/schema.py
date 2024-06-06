@@ -17,11 +17,11 @@ class PWSchema(Schema):
     amplitude = fields.Integer(required=True)
     pri = fields.Float(required=True)
     num_pulses_pw = fields.Integer(required=True)
+    form = fields.String(required=True)
 
 class LFMSchema(Schema):
-    pulse_width_lfm = fields.Float(required=True)
-    pri = fields.Float(required=True)
-    num_reps = fields.Integer(required=True)
-    fstart = fields.Integer(required=True)
-    fstop = fields.Integer(required=True)
-    sample_rate_lfm = fields.Integer(required=True)
+    sample_rate = fields.Integer(required=True)
+    fstart = fields.Float(required=True)
+    fstop = fields.Float(required=True)
+    signal_length = fields.Float(required=True)
+    form = fields.String(required=True)
