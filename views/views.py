@@ -21,14 +21,14 @@ def get_cw():
 
     try:
         data = schema.load(request.args)
-        pulse = su.continuous_wave.generate_cw_iq(data["frequency"], data["pulse_width"], data["pri"], data["num_reps"], data["sample_rate"])
+        pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["signal_length"])
 
         if data["form"] == "sc16":
             pulse_bytes = get_iq_bytes(pulse)
             return send_bytes_response(pulse_bytes, "cw")
 
         elif data["form"] == "png":
-            t = np.linspace(0, data["pulse_width"], pulse.shape[0])
+            t = np.linspace(0, data["signal_length"], pulse.shape[0])
             return send_plot_image(pulse, t)
 
     except ValidationError as err:

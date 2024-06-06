@@ -32,24 +32,12 @@
 
 <form id="dataForm" action="/generate/cw" method="get">
   <div class="form-group">
-    <label for="frequency">Frequency (Hz):</label>
-    <input type="text" id="frequency" name="frequency" value="1000" required pattern="\d+">
-  </div>
-  <div class="form-group">
-    <label for="pulse_width">Pulse Width (s):</label>
-    <input type="text" id="pulse_width" name="pulse_width" value="0.000001" required pattern="\d*\.?\d+">
-  </div>
-  <div class="form-group">
-    <label for="pri">PRI (s):</label>
-    <input type="text" id="pri" name="pri" value="0.0001" required pattern="\d*\.?\d+">
-  </div>
-  <div class="form-group">
-    <label for="num_reps">Number of Repetitions:</label>
-    <input type="text" id="num_reps" name="num_reps" value="10" required pattern="\d+">
-  </div>
-  <div class="form-group">
     <label for="sample_rate">Sample Rate (Hz):</label>
-    <input type="text" id="sample_rate" name="sample_rate" value="1000000" required pattern="\d+">
+    <input type="text" id="sample_rate" name="sample_rate" value="1000" required pattern="\d+">
+  </div>
+  <div class="form-group">
+    <label for="signal_length">Signal Length (s):</label>
+    <input type="text" id="signal_length" name="signal_length" value="1" required pattern="\d+">
   </div>
   <div class="form-group" style="display:none;">
     <input type="text" id="form" name="form" value="sc16" required>
