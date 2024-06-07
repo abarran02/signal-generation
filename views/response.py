@@ -30,7 +30,7 @@ def send_interactive_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], a
         y=df.columns,
         title=f"{abbr.upper()} Graph"
     )
-    fig.update_layout(xaxis_title="Time (s)", yaxis_title="Amplitude")
+    fig.update_layout(xaxis_title="Time (s)", yaxis_title="Amplitude", height=750)
     fig_html = fig.to_html()
 
     return render_template("graph.html", fig_html=fig_html, title=f"{abbr.upper()} Graph")
