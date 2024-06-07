@@ -35,12 +35,11 @@ def send_interactive_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], a
 
     return render_template("graph.html", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 
-def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_]):
+def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: str):
     buf = BytesIO()
-    plt.figure()
     plt.plot(t, np.real(pulse), label="In-phase (I)")
     plt.plot(t, np.imag(pulse), label="Quadrature (Q)", linestyle="--")
-    plt.title("Radar Signal in Time Domain")
+    plt.title(f"{abbr.upper()} Signal in Time Domain")
     plt.xlabel("Time (s)")
     plt.ylabel("Amplitude")
     plt.legend()
@@ -59,7 +58,7 @@ def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str
 
     elif form == "png":
         t = np.linspace(0, tstop, pulse.shape[0])
-        return send_plot_image(pulse, t)
+        return send_plot_image(pulse, t, abbr)
 
     elif form == "graph":
         t = np.linspace(0, tstop, pulse.shape[0])

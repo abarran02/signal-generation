@@ -35,7 +35,8 @@
 <body>
 <label><input type="radio" name="formSwitch" value="cw" checked>Continuous Wave</label>
 <label><input type="radio" name="formSwitch" value="lfm">Linear Frequency Modulated</label>
-<label><input type="radio" name="formSwitch" value="radar">Pulse Width</label>
+<label><input type="radio" name="formSwitch" value="bpsk">Binary Phase Shift Keying</label>
+<label><input type="radio" name="formSwitch" value="radar">Radar Pulse</label>
 
 <form id="cw" action="/generate/cw" method="get" class="form active">
   <div class="form-group">
@@ -79,7 +80,7 @@
   <button type="submit">Download .sc16</button>
 </form>
 
-<form id="radar" action="/generate/radar" method="get" class="form">
+<form id="bpsk" action="/generate/bpsk" method="get" class="form">
   <div class="form-group">
     <label for="sample_rate">Sample Rate:</label>
     <input type="text" id="sample_rate" name="sample_rate" value="50000000">
@@ -92,9 +93,26 @@
     <label for="num_bits">Number of Bits:</label>
     <input type="text" id="num_bits" name="num_bits" value="4">
   </div>
+  <div class="form-group" style="display:none;">
+    <input type="text" id="form" name="form" value="sc16" required>
+  </div>
+  <button type="button" onclick="displayImage()">Show Waveform</button>
+  <button type="button" onclick="redirectInteractive()">View Interactive</button>
+  <button type="submit">Download .sc16</button>
+</form>
+
+<form id="radar" action="/generate/radar" method="get" class="form">
   <div class="form-group">
-    <label for="taps">Taps:</label>
-    <input type="text" id="taps" name="taps" value="3,2">
+    <label for="sample_rate">Sample Rate:</label>
+    <input type="text" id="sample_rate" name="sample_rate" value="50000000">
+  </div>
+  <div class="form-group">
+    <label for="bit_length">Bit Length:</label>
+    <input type="text" id="bit_length" name="bit_length" value="0.0000005">
+  </div>
+  <div class="form-group">
+    <label for="num_bits">Number of Bits:</label>
+    <input type="text" id="num_bits" name="num_bits" value="4">
   </div>
   <div class="form-group">
     <label for="amplitude">Amplitude:</label>

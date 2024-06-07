@@ -3,7 +3,8 @@ from flask import Blueprint, request
 from marshmallow import ValidationError
 
 import signal_utils as su
-from signal_utils.common.sequences import maximal_length_sequence
+from signal_utils.common.sequences import maximal_length_sequence, random_tap_sequence
+from signal_utils.common.generate_bpsk import generate_bpsk
 
 from .response import output_cases
 from .schema import *
@@ -29,7 +30,8 @@ def get_radar():
 
     try:
         data = schema.load(request.args)
-        seq = maximal_length_sequence(data["num_bits"], np.array(data["taps"]))
+        taps = random_tap_sequence(data["num_bits"])
+        seq = maximal_length_sequence(data["num_bits"], np.array(taps))
         pulse = su.radar_pulse.generate_pulse(seq, data["sample_rate"], data["bit_length"], data["pri"], data["num_pulses"])
         pulse = np.round(data["amplitude"] * pulse)
 
@@ -47,6 +49,21 @@ def get_lfm():
         pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["signal_length"])
 
         return output_cases(pulse, data["form"], data["signal_length"], "lfm")
+
+    except ValidationError as err:
+        return {"errors": err.messages}, 400
+
+@wave_views.route("/bpsk", methods=["GET"])
+def get_bpsk():
+    schema = BPSKSchema()
+
+    try:
+        data = schema.load(request.args)
+        taps = random_tap_sequence(data["num_bits"])
+        seq = maximal_length_sequence(data["num_bits"], np.array(taps))
+        pulse = generate_bpsk(seq, data["sample_rate"], data["bit_length"])
+
+        return output_cases(pulse, data["form"], data["bit_length"], "bpsk")
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
