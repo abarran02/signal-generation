@@ -35,7 +35,7 @@
 <body>
 <label><input type="radio" name="formSwitch" value="cw" checked>Continuous Wave</label>
 <label><input type="radio" name="formSwitch" value="lfm">Linear Frequency Modulated</label>
-<label><input type="radio" name="formSwitch" value="pw">Pulse Width</label>
+<label><input type="radio" name="formSwitch" value="radar">Pulse Width</label>
 
 <form id="cw" action="/generate/cw" method="get" class="form active">
   <div class="form-group">
@@ -79,7 +79,7 @@
   <button type="submit">Download .sc16</button>
 </form>
 
-<form id="pw" action="/generate/pw" method="get" class="form">
+<form id="radar" action="/generate/radar" method="get" class="form">
   <div class="form-group">
     <label for="sample_rate">Sample Rate:</label>
     <input type="text" id="sample_rate" name="sample_rate" value="50000000">

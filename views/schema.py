@@ -15,7 +15,7 @@ class CWSchema(Schema):
     signal_length = fields.Float(required=True)
     form = fields.String(required=True)
 
-class PWSchema(Schema):
+class RadarSchema(Schema):
     sample_rate = fields.Integer(required=True)
     bit_length = fields.Float(required=True)
     num_bits = fields.Integer(required=True)

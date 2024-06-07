@@ -23,9 +23,9 @@ def get_cw():
     except ValidationError as err:
         return {"errors": err.messages}, 400
 
-@wave_views.route("/pw", methods=["GET"])
-def get_pw():
-    schema = PWSchema()
+@wave_views.route("/radar", methods=["GET"])
+def get_radar():
+    schema = RadarSchema()
 
     try:
         data = schema.load(request.args)
