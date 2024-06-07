@@ -1,9 +1,10 @@
 from datetime import datetime
 from io import BytesIO
 
-import matplotlib.pyplot as plt
 import numpy as np
-from flask import Blueprint, request, send_file
+import pandas as pd
+import plotly.express as px
+from flask import Blueprint, request, send_file, jsonify
 from marshmallow import ValidationError
 from numpy.typing import NDArray
 
@@ -27,7 +28,7 @@ def get_cw():
             pulse_bytes = get_iq_bytes(pulse)
             return send_bytes_response(pulse_bytes, "cw")
 
-        elif data["form"] == "png":
+        elif data["form"] == "graph":
             t = np.linspace(0, data["signal_length"], pulse.shape[0])
             return send_plot_image(pulse, t)
 
@@ -48,7 +49,7 @@ def get_pw():
             pulse_bytes = get_iq_bytes(pulse)
             return send_bytes_response(pulse_bytes, "pw")
 
-        elif data["form"] == "png":
+        elif data["form"] == "graph":
             t = np.linspace(0, data["bit_length"], pulse.shape[0])
             return send_plot_image(pulse, t)
 
@@ -67,7 +68,7 @@ def get_lfm():
             pulse_bytes = get_iq_bytes(pulse)
             return send_bytes_response(pulse_bytes, "lfm")
 
-        elif data["form"] == "png":
+        elif data["form"] == "graph":
             t = np.linspace(0, data["signal_length"], pulse.shape[0])
             return send_plot_image(pulse, t)
 
@@ -87,18 +88,8 @@ def send_bytes_response(pulse_bytes: bytes, prefix: str):
     )
 
 def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_]):
-    buf = BytesIO()
-    plt.figure()
-    plt.plot(t, np.real(pulse), label="In-phase (I)")
-    plt.plot(t, np.imag(pulse), label="Quadrature (Q)", linestyle="--")
-    plt.title("Radar Signal in Time Domain")
-    plt.xlabel("Time (s)")
-    plt.ylabel("Amplitude")
-    plt.legend()
+    df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
+    fig = px.line(df, x=t, y=df.columns, labels={'x':'Time (s)', 'y':'Amplitude'})
+    fig_html = fig.to_html(full_html=False, include_plotlyjs=False)
 
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    return send_file(
-        buf,
-        mimetype="image/png"
-    )
+    return jsonify(fig_html)
