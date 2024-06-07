@@ -31,7 +31,6 @@
       display: block;
     }
   </style>
-  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
 </head>
 <body>
 <label><input type="radio" name="formSwitch" value="cw" checked>Continuous Wave</label>
@@ -50,7 +49,8 @@
   <div class="form-group" style="display:none;">
     <input type="text" id="form" name="form" value="sc16" required>
   </div>
-  <button type="button" onclick="displayGraph()">Show Waveform</button>
+  <button type="button" onclick="displayImage()">Show Waveform</button>
+  <button type="button" onclick="redirectInteractive()">View Interactive</button>
   <button type="submit">Download .sc16</button>
 </form>
 
@@ -74,7 +74,8 @@
   <div class="form-group" style="display:none;">
     <input type="text" id="form" name="form" value="sc16" required>
   </div>
-  <button type="button" onclick="displayGraph()">Show Waveform</button>
+  <button type="button" onclick="displayImage()">Show Waveform</button>
+  <button type="button" onclick="redirectInteractive()">View Interactive</button>
   <button type="submit">Download .sc16</button>
 </form>
 
@@ -110,43 +111,44 @@
   <div class="form-group" style="display:none;">
     <input type="text" id="form" name="form" value="sc16" required>
   </div>
-  <button type="button" onclick="displayGraph()">Show Waveform</button>
+  <button type="button" onclick="displayImage()">Show Waveform</button>
+  <button type="button" onclick="redirectInteractive()">View Interactive</button>
   <button type="submit">Download .sc16</button>
 </form>
 
 
-<div id="dynamicGraph" style="display:none;"></div>
+<img id="dynamicImage" style="display:none;">
 
 <script>
   document.querySelectorAll('input[name="formSwitch"]').forEach(radio => {
     radio.addEventListener('change', function() {
       document.querySelectorAll('.form').forEach(form => form.classList.remove('active'));
       document.getElementById(this.value).classList.add('active');
-      document.getElementById('dynamicGraph').style.display = 'none';
+      document.getElementById('dynamicImage').style.display = 'none';
     });
   });
 
-  function displayGraph(graphUrl) {
+  function displayImage(imageUrl) {
+    // get all form data and serialize
+    const form = document.querySelector('.form.active');
+    const url = new URL(form.action);
+    const params = new URLSearchParams(new FormData(form));
+    params.set('form', 'png');
+
+    // display image on page
+    const imgElement = document.getElementById('dynamicImage');
+    imgElement.src = `${url.pathname}?${params.toString()}`;
+    imgElement.style.display = 'block';
+  }
+
+  function redirectInteractive(imageUrl) {
     // get all form data and serialize
     const form = document.querySelector('.form.active');
     const url = new URL(form.action);
     const params = new URLSearchParams(new FormData(form));
     params.set('form', 'graph');
 
-    // fetch graph html
-    fetch(`${url.pathname}?${params.toString()}`, {
-      method: "GET"
-    })
-    .then((res) => res.json())
-    .then(data => {
-      // display graph
-      const graphElement = document.getElementById('dynamicGraph');
-      graphElement.innerHTML = data;
-      graphElement.style.display = 'block';
-    })
-    .catch(error => {
-      console.error(error);
-    });
+    window.location.href = `${url.pathname}?${params.toString()}`;
   }
 </script>
 
