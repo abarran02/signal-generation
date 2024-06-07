@@ -1,5 +1,4 @@
 import math
-from decimal import Decimal
 
 import numpy as np
 from numpy.typing import NDArray
@@ -32,7 +31,7 @@ def blackman_nuttall_window(N: int) -> NDArray[np.float_]:
     return w
 
 #-----------------------------------------------------------------------------------------------------
-def create_fir_filter(fc: Decimal, w: NDArray[np.float_]) -> NDArray[np.float_]:
+def create_fir_filter(fc: float, w: NDArray[np.float_]) -> NDArray[np.float_]:
 
     N = w.shape[0]
     g = np.zeros(N)
