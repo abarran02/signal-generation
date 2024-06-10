@@ -19,7 +19,7 @@ def get_cw():
         data = schema.load(request.args)
         pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["signal_length"])
 
-        return output_cases(pulse, data["form"], data["signal_length"], "CW")
+        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"])
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
@@ -35,7 +35,7 @@ def get_radar():
         pulse = su.radar_pulse.generate_pulse(seq, data["sample_rate"], data["bit_length"], data["pri"], data["num_pulses"])
         pulse = np.round(data["amplitude"] * pulse)
 
-        return output_cases(pulse, data["form"], data["bit_length"], "PW")
+        return output_cases(pulse, data["form"], data["bit_length"], "PW", data["axes"])
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
@@ -48,7 +48,7 @@ def get_lfm():
         data = schema.load(request.args)
         pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["signal_length"])
 
-        return output_cases(pulse, data["form"], data["signal_length"], "lfm")
+        return output_cases(pulse, data["form"], data["signal_length"], "lfm", data["axes"])
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
@@ -63,9 +63,7 @@ def get_bpsk():
         seq = maximal_length_sequence(data["num_bits"], np.array(taps))
         pulse = generate_bpsk(seq, data["sample_rate"], data["bit_length"])
 
-        #print("Data form information:" + data["form"])
-        return output_cases(pulse, data["form"], data["bit_length"], "bpsk") #gives the different options for graph generation
-        
+        return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"])
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
