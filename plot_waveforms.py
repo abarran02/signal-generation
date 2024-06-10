@@ -1,7 +1,8 @@
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import plotly.express as px
 from numpy.typing import NDArray
 
 import signal_utils as su
@@ -55,12 +56,6 @@ if __name__ == "__main__":
             save_filename = f"{wave[1]}.sc16"
             common.binary_file_ops.write_binary_iq_data(save_filename, iq_data)
 
-        # plot radar signal in time domain
-        plt.figure()
-        plt.plot(t, np.real(iq_data), label="In-phase (I)")
-        plt.plot(t, np.imag(iq_data), label="Quadrature (Q)", linestyle="--")
-        plt.title("Radar Signal in Time Domain")
-        plt.xlabel("Time (s)")
-        plt.ylabel("Amplitude")
-        plt.legend()
-        plt.show()
+        df = pd.DataFrame({"real": np.real(iq_data), "imag": np.imag(iq_data)})
+        fig = px.line(df, x=t, y=df.columns, labels={'x':'Time (s)', 'y':'Amplitude'})
+        fig.show()
