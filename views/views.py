@@ -63,7 +63,9 @@ def get_bpsk():
         seq = maximal_length_sequence(data["num_bits"], np.array(taps))
         pulse = generate_bpsk(seq, data["sample_rate"], data["bit_length"])
 
-        return output_cases(pulse, data["form"], data["bit_length"], "bpsk")
+        print("Data form information:" + data["form"])
+        return output_cases(pulse, data["form"], data["bit_length"], "bpsk") #gives the different options for graph generation
+        
 
     except ValidationError as err:
         return {"errors": err.messages}, 400

@@ -98,7 +98,7 @@
   </div>
   <button type="button" onclick="displayImage()">Show Waveform</button>
   <button type="button" onclick="redirectInteractive()">View Interactive</button>
-  <button type="button" onClick="redirectThreeDim()">Show Three-Dimensional</button>
+  <button type="button" onclick="redirectThreeDim()">View Three-Dimensional</button>
   <button type="submit">Download .sc16</button>
 </form>
 
@@ -147,6 +147,7 @@
     });
   });
 
+
   function displayImage(imageUrl) {
     // get all form data and serialize
     const form = document.querySelector('.form.active');
@@ -173,6 +174,11 @@
   function redirectThreeDim(imageURL) {
     // retrieve form data 
     const form = document.querySelector('.form.active');
+    const url = new URL(form.action);
+    const params = new URLSearchParams(new FormData(form));
+    params.set('form', 'threeDim');
+
+    window.location.href = `${url.pathname}?${params.toString()}`; //opens a new window
   }
 </script>
 
