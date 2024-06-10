@@ -7,8 +7,8 @@ import pandas as pd
 import plotly.express as px
 from flask import Response, render_template, send_file
 from numpy.typing import NDArray
-import plotly.express as px 
-  
+import plotly.express as px
+
 
 from signal_utils.common.binary_file_ops import get_iq_bytes
 
@@ -35,7 +35,7 @@ def send_interactive_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], a
     fig.update_layout(xaxis_title="Time (s)", yaxis_title="Amplitude", height=750)
     fig_html = fig.to_html()
 
-    return render_template("graph.html", fig_html=fig_html, title=f"{abbr.upper()} Graph")
+    return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 
 def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: str):
     buf = BytesIO()
@@ -55,13 +55,13 @@ def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: st
 def create_three_dim_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: str):
     df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)}) #valueError has something to do with scatter_3d
     print(df.head())
-    fig = px.scatter_3d(df, 
+    fig = px.scatter_3d(df,
                         x = df.loc[:, "real"],
                         y = df.loc[:, "imag"],
                         z = t #temporary input
                         )
     fig_html = fig.to_html()
-    return render_template("graph.html", fig_html=fig_html, title=f"{abbr.upper()} Graph")
+    return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 
 def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str) -> Response:
     if form == "sc16":

@@ -1,40 +1,44 @@
 document.querySelectorAll('input[name="formSwitch"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-      document.querySelectorAll('.form').forEach(form => form.classList.remove('active'));
-      document.getElementById(this.value).classList.add('active');
-      document.getElementById('dynamicImage').style.display = 'none';
-    });
+  radio.addEventListener('change', function() {
+    document.querySelectorAll('.form').forEach(form => form.classList.remove('active'));
+    document.getElementById(this.value).classList.add('active');
+    document.getElementById('dynamicImage').style.display = 'none';
   });
+});
 
-function displayImage(imageUrl) {
-    // get all form data and serialize
-    const form = document.querySelector('.form.active');
-    const url = new URL(form.action);
-    const params = new URLSearchParams(new FormData(form));
-    params.set('form', 'png');
+// set the first radio button as checked and first form as active
+document.querySelector('input[name="formSwitch"]').checked = true;
+document.querySelector('form[class="form"]').classList.add('active');
 
-    // display image on page
-    const imgElement = document.getElementById('dynamicImage');
-    imgElement.src = `${url.pathname}?${params.toString()}`;
-    imgElement.style.display = 'block';
-  }
+function displayImage() {
+  // get all form data and serialize
+  const form = document.querySelector('.form.active');
+  const url = new URL(form.action);
+  const params = new URLSearchParams(new FormData(form));
+  params.set('form', 'png');
 
-  function redirectInteractive(imageUrl) {
-    // get all form data and serialize
-    const form = document.querySelector('.form.active');
-    const url = new URL(form.action);
-    const params = new URLSearchParams(new FormData(form));
-    params.set('form', 'graph');
+  // display image on page
+  const imgElement = document.getElementById('dynamicImage');
+  imgElement.src = `${url.pathname}?${params.toString()}`;
+  imgElement.style.display = 'block';
+}
 
-    window.location.href = `${url.pathname}?${params.toString()}`;
-  }
-  function redirectThreeDim(imageURL) {
-    // retrieve form data 
-    const form = document.querySelector('.form.active');
-    const url = new URL(form.action);
-    const params = new URLSearchParams(new FormData(form));
-    params.set('form', 'threeDim');
+function redirectInteractive() {
+  // get all form data and serialize
+  const form = document.querySelector('.form.active');
+  const url = new URL(form.action);
+  const params = new URLSearchParams(new FormData(form));
+  params.set('form', 'graph');
 
-    window.location.href = `${url.pathname}?${params.toString()}`; //opens a new window
-  }
+  window.location.href = `${url.pathname}?${params.toString()}`;
+}
 
+function redirectThreeDim() {
+  // retrieve form data
+  const form = document.querySelector('.form.active');
+  const url = new URL(form.action);
+  const params = new URLSearchParams(new FormData(form));
+  params.set('form', 'threeDim');
+
+  window.location.href = `${url.pathname}?${params.toString()}`; //opens a new window
+}

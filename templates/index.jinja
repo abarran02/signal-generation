@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Form</title>
+  <link rel="stylesheet" href = "/static/forms.css" />
+</head>
+<body>
+{% for f in forms %}
+  <label><input type="radio" name="formSwitch" value="{{ f.id }}">{{ f.name }}</label>
+{% endfor %}
+
+{% for f in forms %}
+  <form id="{{ f.id }}" action="{{ f.action }}" method="get" class="form">
+    {% for field in f.fields %}
+      <div class="form-group">
+        <label for="{{ field.name }}">{{ field.label }}</label>
+        <input type="text" id="{{ field.name }}" name="{{ field.name }}" value="{{ field.value }}" required>
+      </div>
+    {% endfor %}
+
+    <div class="form-group" style="display:none;">
+      <input type="text" id="form" name="form" value="sc16" required>
+    </div>
+    <button type="button" onclick="displayImage()">Show Waveform</button>
+    <button type="button" onclick="redirectInteractive()">View Interactive</button>
+    <button type="button" onclick="redirectThreeDim()">View Three-Dimensional</button>
+    <button type="submit">Download .sc16</button>
+  </form>
+{% endfor %}
+
+<img id="dynamicImage" style="display:none;">
+
+<script src = "/static/forms_redirection.js" charset="utf-8" ></script>
+
+</body>
+</html>
