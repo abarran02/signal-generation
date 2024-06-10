@@ -2,6 +2,7 @@ import random
 
 import numpy as np
 from numpy.typing import NDArray
+from signal_utils.common.generate_bpsk import generate_bpsk
 
 """
 https://web.archive.org/web/20110806114215/http://homepage.mac.com/afj/taplist.html
@@ -51,6 +52,18 @@ def random_tap_sequence(num_bits: int) -> list[list[int]]:
     possible_seqs = max_uniques[num_bits]
     # inefficient subtraction on-the-fly but we can fix the data later
     return [x-1 for x in random.choice(possible_seqs)] #1-indexing
+
+def generate_iq_taps(num_bits, sample_rate, bit_length, pri):
+    iq = []
+    for i in range(num_bits-1):
+        taps = random_tap_sequence(num_bits)
+        mls = maximal_length_sequence(num_bits, np.array(taps))
+        temp = generate_bpsk(mls, sample_rate, bit_length)
+        n_zeros = pri - temp
+        new_val = temp - n_zeros
+        iq.append(new_val)
+    return iq
+
 
 def maximal_length_sequence(num_bits: int, taps: NDArray[np.int_]) -> NDArray[np.int_]:
 

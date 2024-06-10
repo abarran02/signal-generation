@@ -3,7 +3,7 @@ from flask import Blueprint, request
 from marshmallow import ValidationError
 
 import signal_utils as su
-from signal_utils.common.sequences import maximal_length_sequence, random_tap_sequence
+from signal_utils.common.sequences import maximal_length_sequence, random_tap_sequence, generate_iq_taps
 from signal_utils.common.generate_bpsk import generate_bpsk
 
 from .response import output_cases
@@ -35,6 +35,8 @@ def get_radar():
         pulse = su.radar_pulse.generate_pulse(seq, data["sample_rate"], data["bit_length"], data["pri"], data["num_pulses"])
         pulse = np.round(data["amplitude"] * pulse)
 
+        iq = generate_iq_taps(data["num_bits"], data["sample_rate"], data["bit_length"], data["pri"])
+        print(iq)
         return output_cases(pulse, data["form"], data["bit_length"], "PW")
 
     except ValidationError as err:
@@ -62,8 +64,6 @@ def get_bpsk():
         taps = random_tap_sequence(data["num_bits"])
         seq = maximal_length_sequence(data["num_bits"], np.array(taps))
         pulse = generate_bpsk(seq, data["sample_rate"], data["bit_length"])
-
-        #print("Data form information:" + data["form"])
         return output_cases(pulse, data["form"], data["bit_length"], "bpsk") #gives the different options for graph generation
         
 
