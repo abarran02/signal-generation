@@ -40,7 +40,7 @@ https://in.ncu.edu.tw/ncume_ee/digilogi/prbs.htm
 def random_tap_sequence(num_bits: int) -> list[list[int]]:
     max_uniques = {
         4: [[4,3]],
-        5: [[6,5,4,1], [6,5,3,2]],
+        5: [[5,4,3,2], [5,4,3,1]],
         6: [[6,5,4,1], [6,5,3,2]],
         7: [[7,6,5,4], [7,6,5,2], [7,6,4,2], [7,6,4,1], [7,5,4,3]],
         8: [[8,7,6,1], [8,7,5,3], [8,7,3,2], [8,6,5,4], [8,6,5,3], [8,6,5,2]],
@@ -50,7 +50,7 @@ def random_tap_sequence(num_bits: int) -> list[list[int]]:
 
     possible_seqs = max_uniques[num_bits]
     # inefficient subtraction on-the-fly but we can fix the data later
-    return [x-1 for x in random.choice(possible_seqs)]
+    return [x-1 for x in random.choice(possible_seqs)] #1-indexing
 
 def maximal_length_sequence(num_bits: int, taps: NDArray[np.int_]) -> NDArray[np.int_]:
 

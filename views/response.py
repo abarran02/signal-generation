@@ -7,6 +7,8 @@ import pandas as pd
 import plotly.express as px
 from flask import Response, render_template, send_file
 from numpy.typing import NDArray
+import plotly.express as px 
+  
 
 from signal_utils.common.binary_file_ops import get_iq_bytes
 
@@ -50,6 +52,13 @@ def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: st
         buf,
         mimetype="image/png"
     )
+def create_three_dim_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: str):
+    df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
+    fig = px.scatter_3d(df, 
+                        x = t,
+                        y=df.columns,
+                        z = t #temporary input
+                        )
 
 def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str) -> Response:
     if form == "sc16":
@@ -63,3 +72,6 @@ def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str
     elif form == "graph":
         t = np.linspace(0, tstop, pulse.shape[0])
         return send_interactive_graph(pulse, t, abbr)
+    elif form == "3dim":
+        t = np.linspace(0, tstop, pulse.shape[0])
+        return create_three_dim_graph(pulse, t, abbr)
