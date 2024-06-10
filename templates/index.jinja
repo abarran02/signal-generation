@@ -7,10 +7,11 @@
   <link rel="stylesheet" href = "/static/forms.css" />
 </head>
 <body>
+<h3>Select Type:</h3>
 {% for f in forms %}
   <label><input type="radio" name="formSwitch" value="{{ f.id }}">{{ f.name }}</label>
 {% endfor %}
-
+<h3>Inputs:</h3>
 {% for f in forms %}
   <form id="{{ f.id }}" action="{{ f.action }}" method="get" class="form">
     {% for field in f.fields %}
