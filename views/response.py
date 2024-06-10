@@ -58,8 +58,11 @@ def create_three_dim_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], a
     fig = px.scatter_3d(df,
                         x = df.loc[:, "real"],
                         y = df.loc[:, "imag"],
-                        z = t #temporary input
+                        z = t,
+                        title = "3D Representation of " + abbr.upper()
                         )
+                        
+    fig.update_layout(height =800)
     fig_html = fig.to_html()
     return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 

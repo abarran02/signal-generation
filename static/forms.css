@@ -8,6 +8,7 @@ body {
 label {
   display: block;
   margin-bottom: 5px;
+  padding: 10px,
 }
 input[type="text"], input[type="text"], input[type="range"] {
   width: 100%;
