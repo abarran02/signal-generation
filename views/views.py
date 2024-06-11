@@ -35,8 +35,9 @@ def get_radar():
         pulse = su.radar_pulse.generate_pulse(seq, data["sample_rate"], data["bit_length"], data["pri"], data["num_pulses"])
         pulse = np.round(data["amplitude"] * pulse)
 
-        #iq = generate_iq_taps(data["num_bits"], data["sample_rate"], data["bit_length"], data["pri"], data["correlation"])
-        #print(iq)
+        iq = generate_iq_taps(data["num_bits"], data["sample_rate"], data["bit_length"], data["pri"], data["correlation"])
+        #need to connect w correlation
+        print(iq)
         return output_cases(pulse, data["form"], data["bit_length"], "PW", data["axes"])
 
     except ValidationError as err:
@@ -65,7 +66,7 @@ def get_bpsk():
         seq = maximal_length_sequence(data["num_bits"], np.array(taps))
         pulse = generate_bpsk(seq, data["sample_rate"], data["bit_length"])
         pri = data["bit_length"] * (2**(data["num_bits"]-1))
-        #iq = generate_iq_taps(data["num_bits"], data["sample_rate"], data["bit_length"], pri, data["correlation"])
+        iq = generate_iq_taps(data["num_bits"], data["sample_rate"], data["bit_length"], pri, data["correlation"])
         return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"])
 
     except ValidationError as err:
