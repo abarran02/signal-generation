@@ -21,21 +21,25 @@
     {% for f in forms %}
       <form id="{{ f.id }}" action="{{ f.action }}" method="get" class="form">
         {% for field in f.fields %}
-            {% if (field.label != "Sequencing Type:") %}
-          <div class="form-group">
-                <label for="{{ field.name }}">{{ field.label }}</label>
-                <input type="text" id="{{ field.name }}" name="{{ field.name }}" value="{{ field.value }}" required>
+          {% if field.type == "dropdown" %}
+            <div class="form-group">
+              <label for="{{ field.name }}">{{ field.label }}</label>
+              <div class = "dropdown">
+                <select id="{{ field.name }}" name="{{ field.name }}" style="font-size: 16px">
+                  {% for o in field.options %}
+                    <option value="{{ o.name }}">{{ o.label }}</option>
+                  {% endfor %}
+                </select>
               </div>
-            {% else %}
-          <label for="seq_type">Sequencing Type:</label>
-            <div class = "dropdown">
-              <select id="seq_type" name="seq_type" style="font-size: 16px">
-                <option value="mls">Maximum Length Sequencing (MLS)</option>
-                <option value="barker">Barker Code</option>
-              </select>
             </div>
-        {% endif %}
-    {% endfor %}
+          {% else %}
+            <div class="form-group">
+              <label for="{{ field.name }}">{{ field.label }}</label>
+              <input type="text" id="{{ field.name }}" name="{{ field.name }}" value="{{ field.value }}" required>
+            </div>
+          {% endif %}
+        {% endfor %}
+
         <div class="form-group" style="display:none;">
           <input type="text" id="form" name="form" value="sc16" required>
         </div>
