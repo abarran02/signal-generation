@@ -2,7 +2,8 @@ document.querySelectorAll('input[name="formSwitch"]').forEach(radio => {
   radio.addEventListener('change', function() {
     document.querySelectorAll('.form').forEach(form => form.classList.remove('active'));
     document.getElementById(this.value).classList.add('active');
-    document.getElementById('dynamicImage').style.display = 'none';
+    document.getElementById('dynamicIQvT').style.display = 'none';
+    document.getElementById('dynamicIvQ').style.display = 'none';
   });
 });
 
@@ -17,11 +18,17 @@ function displayImage() {
   const url = new URL(form.action);
   const params = new URLSearchParams(new FormData(form));
   params.set('form', 'png');
+  params.set('axes', 'iqvt');
 
-  // display image on page
-  const imgElement = document.getElementById('dynamicImage');
-  imgElement.src = `${url.pathname}?${params.toString()}`;
-  imgElement.style.display = 'block';
+  // display images on page
+  const iqvt = document.getElementById('dynamicIQvT');
+  iqvt.src = `${url.pathname}?${params.toString()}`;
+  iqvt.style.display = 'block';
+
+  params.set('axes', 'ivq');
+  const ivq = document.getElementById('dynamicIvQ');
+  ivq.src = `${url.pathname}?${params.toString()}`;
+  ivq.style.display = 'block';
 }
 
 function redirectInteractive() {

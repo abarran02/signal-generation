@@ -30,29 +30,26 @@ class ScientificNotation(fields.Field):
         except ValueError as error:
             raise ValidationError("Invalid conversion to scientific notation.") from error
 
-class CWSchema(Schema):
+class WaveGeneric(Schema):
     sample_rate = ScientificNotation(value_type="int", required=True)
-    signal_length = ScientificNotation(required=True)
     form = fields.String(required=True)
+    axes = fields.String(missing=None)
 
-class RadarSchema(Schema):
-    sample_rate = ScientificNotation(value_type="int", required=True)
+class CWSchema(WaveGeneric):
+    signal_length = ScientificNotation(required=True)
+
+class RadarSchema(WaveGeneric):
     bit_length = ScientificNotation(required=True)
     num_bits = ScientificNotation(value_type="int", required=True)
     amplitude = ScientificNotation(value_type="int", required=True)
     pri = ScientificNotation(required=True)
     num_pulses = ScientificNotation(value_type="int", required=True)
-    form = fields.String(required=True)
 
-class LFMSchema(Schema):
-    sample_rate = ScientificNotation(value_type="int", required=True)
+class LFMSchema(WaveGeneric):
     fstart = ScientificNotation(required=True)
     fstop = ScientificNotation(required=True)
     signal_length = ScientificNotation(required=True)
-    form = fields.String(required=True)
 
-class BPSKSchema(Schema):
-    sample_rate = ScientificNotation(value_type="int", required=True)
+class BPSKSchema(WaveGeneric):
     bit_length = ScientificNotation(required=True)
     num_bits = ScientificNotation(value_type="int", required=True)
-    form = fields.String(required=True)
