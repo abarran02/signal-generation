@@ -2,21 +2,18 @@ from datetime import datetime
 from io import BytesIO
 
 import matplotlib
-from matplotlib.figure import Figure
 import numpy as np
 import pandas as pd
 import plotly.express as px
 from flask import Response, render_template, send_file
+from matplotlib.figure import Figure
 from numpy.typing import NDArray
-import plotly.express as px
-from plotly_resampler import register_plotly_resampler 
-
+from plotly_resampler import register_plotly_resampler
 
 from signal_utils.common.binary_file_ops import get_iq_bytes
 
-register_plotly_resampler(mode='auto') #improves plotly scalability
-# limit matplotlib to png backend
-matplotlib.use("agg")
+register_plotly_resampler(mode='auto')  # improves plotly scalability
+matplotlib.use("agg")  # limit matplotlib to png backend
 
 def send_bytes_response(pulse_bytes: bytes, prefix: str):
     # get current time for file naming
@@ -72,16 +69,16 @@ def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: st
     )
 
 def create_three_dim_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: str):
-    df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)}) 
+    df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
     fig = px.scatter_3d(df,
                         x = df.loc[:, "real"],
                         y = df.loc[:, "imag"],
                         z = t,
                         title = "3D Representation of " + abbr.upper()
                         )
-                        
+
     fig.update_layout(height = 800)
-    fig.update_traces(marker=dict(size=5)) #size of markers 
+    fig.update_traces(marker=dict(size=5)) #size of markers
     fig_html = fig.to_html()
 
     return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
@@ -101,4 +98,4 @@ def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str
 
     elif form == "threeDim":
         t = np.linspace(0, tstop, pulse.shape[0])
-        return create_three_dim_graph(pulse, t, abbr)    
+        return create_three_dim_graph(pulse, t, abbr)
