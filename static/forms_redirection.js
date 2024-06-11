@@ -7,9 +7,10 @@ document.querySelectorAll('input[name="formSwitch"]').forEach(radio => {
   });
 });
 
+localStorage.setItem('val', this.value);
 // set the first radio button as checked and first form as active
 document.querySelector('input[name="formSwitch"]').checked = true;
-document.querySelector('form[class="form"]').classList.add('active');
+document.querySelector(localStorage.getItem('val')).classList.add('active');
 
 function displayImage() {
   // get all form data and serialize
@@ -36,7 +37,6 @@ function redirectInteractive() {
   const url = new URL(form.action);
   const params = new URLSearchParams(new FormData(form));
   params.set('form', 'graph');
-
   window.location.href = `${url.pathname}?${params.toString()}`;
 }
 

@@ -5,4 +5,4 @@ marshmallow
 plotly==5.22.0
 pandas
 matplotlib
-plotly_resampler
+plotly-resampler
