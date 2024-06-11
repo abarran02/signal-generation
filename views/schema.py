@@ -1,4 +1,4 @@
-from marshmallow import Schema, ValidationError, fields
+from marshmallow import Schema, ValidationError, fields, validate
 
 
 class ScientificNotation(fields.Field):
@@ -32,8 +32,8 @@ class ScientificNotation(fields.Field):
 
 class WaveGeneric(Schema):
     sample_rate = ScientificNotation(value_type="int", required=True)
-    form = fields.String(required=True)
-    axes = fields.String(missing=None)
+    form = fields.String(required=True, validate=validate.OneOf(["sc16", "png", "graph", "threeDim"]))
+    axes = fields.String(missing=None, validate=validate.OneOf(["iqvt", "ivq"]))
 
 class CWSchema(WaveGeneric):
     signal_length = ScientificNotation(required=True)
@@ -53,3 +53,4 @@ class LFMSchema(WaveGeneric):
 class BPSKSchema(WaveGeneric):
     bit_length = ScientificNotation(required=True)
     num_bits = ScientificNotation(value_type="int", required=True)
+    correlation = fields.String(required=True, validate=validate.OneOf(["barker", "mls"]))
