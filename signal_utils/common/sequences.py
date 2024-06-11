@@ -61,9 +61,13 @@ def generate_iq_taps(num_bits, sample_rate, bit_length, pri, correlation):
         new_val = temp - n_zeros #need to double check output
         iq.append(new_val)
     return iq
+
 def generate_pulse(num_bits, sample_rate, bit_length, correlation):
     taps = random_tap_sequence(num_bits)
-    seq = correlation(num_bits, np.array(taps)) 
+    if correlation == 'mls':
+        seq = maximal_length_sequence(num_bits, np.array(taps)) 
+    else:
+        seq = barker_code(num_bits)
     temp = generate_bpsk(seq, sample_rate, bit_length)
     return temp
 
