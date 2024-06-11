@@ -3,8 +3,8 @@ from flask import Blueprint, request
 from marshmallow import ValidationError
 
 import signal_utils as su
-from signal_utils.common.sequences import maximal_length_sequence, random_tap_sequence, generate_iq_taps
-from signal_utils.common.generate_bpsk import generate_bpsk
+from signal_utils.common.sequences import maximal_length_sequence, random_tap_sequence, generate_iq_taps, generate_pulse
+from signal_utils.common.generate_bpsk import generate_bpsk 
 
 from .response import output_cases
 from .schema import *
@@ -36,7 +36,6 @@ def get_radar():
         pulse = np.round(data["amplitude"] * pulse)
 
         iq = generate_iq_taps(data["num_bits"], data["sample_rate"], data["bit_length"], data["pri"], data["correlation"])
-        #need to connect w correlation
         print(iq)
         return output_cases(pulse, data["form"], data["bit_length"], "PW", data["axes"])
 
@@ -62,9 +61,7 @@ def get_bpsk():
 
     try:
         data = schema.load(request.args)
-        taps = random_tap_sequence(data["num_bits"])
-        seq = maximal_length_sequence(data["num_bits"], np.array(taps))
-        pulse = generate_bpsk(seq, data["sample_rate"], data["bit_length"])
+        pulse = generate_pulse(data["num_bits"], data["sample_rate"], data["bit_length"])
         pri = data["bit_length"] * (2**(data["num_bits"]-1))
         iq = generate_iq_taps(data["num_bits"], data["sample_rate"], data["bit_length"], pri, data["correlation"])
         return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"])

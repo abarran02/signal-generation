@@ -53,17 +53,19 @@ def random_tap_sequence(num_bits: int) -> list[list[int]]:
     # inefficient subtraction on-the-fly but we can fix the data later
     return [x-1 for x in random.choice(possible_seqs)] #1-indexing
 
-def generate_iq_taps(num_bits, sample_rate, bit_length, pri):
+def generate_iq_taps(num_bits, sample_rate, bit_length, pri, correlation):
     iq = []
-    for i in range(num_bits-1):
-        taps = random_tap_sequence(num_bits)
-        mls = maximal_length_sequence(num_bits, np.array(taps))
-        temp = generate_bpsk(mls, sample_rate, bit_length)
+    for i in range(num_bits-1): #ask Emerson about the range value 
+        temp = generate_pulse(num_bits, sample_rate, bit_length,correlation)
         n_zeros = pri - temp
-        new_val = temp - n_zeros
+        new_val = temp - n_zeros #need to double check output
         iq.append(new_val)
     return iq
-
+def generate_pulse(num_bits, sample_rate, bit_length, correlation):
+    taps = random_tap_sequence(num_bits)
+    seq = correlation(num_bits, np.array(taps)) 
+    temp = generate_bpsk(seq, sample_rate, bit_length)
+    return temp
 
 def maximal_length_sequence(num_bits: int, taps: NDArray[np.int_]) -> NDArray[np.int_]:
 
