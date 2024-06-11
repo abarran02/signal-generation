@@ -7,10 +7,18 @@ document.querySelectorAll('input[name="formSwitch"]').forEach(radio => {
   });
 });
 
+// save active form for going back from interactive graphs
 localStorage.setItem('val', this.value);
-// set the first radio button as checked and first form as active
+
+// on initial render set the first radio button as checked and first form as active
 document.querySelector('input[name="formSwitch"]').checked = true;
-document.querySelector(localStorage.getItem('val')).classList.add('active');
+if (localStorage.getItem('val') === "undefined") {
+  document.querySelector('form[class="form"]').classList.add('active');
+} else {
+  // otherwise pull from saved data
+  document.querySelector(localStorage.getItem('val')).classList.add('active');
+}
+
 
 function displayImage() {
   // get all form data and serialize
