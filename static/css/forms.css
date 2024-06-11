@@ -1,31 +1,42 @@
 body {
   font-family: Arial, sans-serif;
-  margin: 20px;
 }
+
 .dropdown {
     padding: 10;
     font-size: 25;
     margin-bottom: 15px;
 }
+
+.content {
+  margin-top: 40px;
+}
+
 .form-group {
   margin-bottom: 15px;
 }
+
 label {
   display: block;
   margin-bottom: 5px;
   padding: 10,
 }
+
 input[type="text"], input[type="text"], input[type="range"] {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
 }
-.slider-value {
-  text-align: right;
-}
+
 .form {
   display: none;
 }
+
 .form.active {
   display: block;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
 }
