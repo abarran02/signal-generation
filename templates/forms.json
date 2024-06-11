@@ -26,7 +26,8 @@
         "fields": [
             {"label": "Sample Rate:", "name": "sample_rate", "value": "50000000"},
             {"label": "Bit Length:", "name": "bit_length", "value": "0.0000005"},
-            {"label": "Number of Bits:", "name": "num_bits", "value": "4"}
+            {"label": "Number of Bits:", "name": "num_bits", "value": "4"},
+            {"label": "Sequencing Type:", "name": "seq_type", "value": "Maximal Length Sequence (MLS)"}
         ]
     },
     {
