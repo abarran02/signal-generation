@@ -2,7 +2,6 @@
     {
         "id": "cw",
         "name": "Continuous Wave",
-        "filter": false,
         "action": "/generate/cw",
         "fields": [
             {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "1000"},
@@ -15,7 +14,6 @@
     {
         "id": "lfm",
         "name": "Linear Frequency Modulated",
-        "filter": false,
         "action": "/generate/lfm",
         "fields": [
             {"label": "Sample Rate:", "name": "sample_rate", "value": "1000"},
@@ -24,14 +22,12 @@
             {"label": "Signal Length:", "name": "signal_length", "value": "0.25"},
             {"label": "Number Pulses:", "name": "num_pulses", "value": "5"},
             {"label": "Pulse Width (microsec):", "name": "pw", "value": "500"},
-
             {"label": "Pulse Repetitions:", "name": "pulse_reps", "value": "5"}, 
             {"label": "Amplitude", "name": "amplitude", "value" : "2000"}
         ]
     },
     {
         "id": "bpsk",
-        "filter": true,
         "name": "Binary Phase Shift Keying",
         "action": "/generate/bpsk",
         "fields": [
@@ -40,20 +36,10 @@
             {"label": "Number Pulses:", "name": "num_pulses", "value": "10"}, 
             {"label": "Pulse Repetitions:", "name": "pulse_reps", "value": "5"}, 
             {"label": "Amplitude", "name": "amplitude", "value": "2000"}, 
-            {"label": "Number of Bits:", "name": "num_bits", "type": "dropdown",
-                "options": [
-                    {"label": "4", "name": "4"},
-                    {"label": "5", "name": "5"},
-                    {"label": "6", "name": "6"},
-                    {"label": "7", "name": "7"},
-                    {"label": "8", "name": "8"},
-                    {"label": "9", "name": "9"}
-                ]
-            },
             {"label": "Sequencing Type:", "name": "correlation", "type": "dropdown",
                 "options": [
-                    {"label": "Maximum Length Sequencing (MLS)", "name": "mls"},
-                    {"label": "Barker Code", "name": "barker"}
+                    {"label": "Maximum Length Sequencing (MLS)", "name": "mls", "options": [4, 5, 6, 7, 8, 9]},
+                    {"label": "Barker Code", "name": "barker", "options": [2, 3, 4, 5, 7, 11, 13]}
                 ]
             }
         ],
@@ -61,6 +47,19 @@
             {"label": "Cutoff Frequency:", "name": "cutoff_freq", "value": 20},
             {"label": "Number of Taps:", "name": "num_taps", "value": 5}
         ] 
+    },
+    {
+        "id": "radar",
+        "name": "Radar Pulse",
+        "action": "/generate/radar",
+        "fields": [
+            {"label": "Sample Rate:", "name": "sample_rate", "value": "50000000"},
+            {"label": "Bit Length:", "name": "bit_length", "value": "0.0000005"},
+            {"label": "Number of Bits:", "name": "num_bits", "value": "4"},
+            {"label": "Amplitude:", "name": "amplitude", "value": "2000"},
+            {"label": "PRI:", "name": "pri", "value": "0.0001"},
+            {"label": "Number of Pulses:", "name": "num_pulses", "value": "2"}
+        ]
     }
 
 ]
