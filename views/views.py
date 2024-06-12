@@ -24,21 +24,6 @@ def get_cw():
     except ValidationError as err:
         return {"errors": err.messages}, 400
 
-@wave_views.route("/radar", methods=["GET"])
-def get_radar():
-    schema = RadarSchema()
-
-    try:
-        data = schema.load(request.args)
-        taps = random_tap_sequence(data["num_bits"])
-        seq = maximal_length_sequence(data["num_bits"], np.array(taps))
-        pulse = su.radar_pulse.generate_pulse(seq, data["sample_rate"], data["bit_length"], data["pri"], data["num_pulses"])
-        pulse = np.round(data["amplitude"] * pulse)
-        return output_cases(pulse, data["form"], data["bit_length"], "PW", data["axes"])
-
-    except ValidationError as err:
-        return {"errors": err.messages}, 400
-
 @wave_views.route("/lfm", methods=["GET"])
 def get_lfm():
     schema = LFMSchema()
