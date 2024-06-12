@@ -34,23 +34,25 @@ class WaveGeneric(Schema):
     sample_rate = ScientificNotation(value_type="int", required=True)
     form = fields.String(required=True, validate=validate.OneOf(["sc16", "png", "graph", "threeDim"]))
     axes = fields.String(missing=None, validate=validate.OneOf(["iqvt", "ivq"]))
+    amplitude = ScientificNotation(value_type="int", required=True)
 
 class CWSchema(WaveGeneric):
     signal_length = ScientificNotation(required=True)
-
-class RadarSchema(WaveGeneric):
-    bit_length = ScientificNotation(required=True)
-    num_bits = ScientificNotation(value_type="int", required=True)
-    amplitude = ScientificNotation(value_type="int", required=True)
-    pri = ScientificNotation(required=True)
-    num_pulses = ScientificNotation(value_type="int", required=True)
+    pw = ScientificNotation(required=True)
 
 class LFMSchema(WaveGeneric):
     fstart = ScientificNotation(required=True)
     fstop = ScientificNotation(required=True)
     signal_length = ScientificNotation(required=True)
+    num_pulses = ScientificNotation(value_type="int", required=True)
+    pulse_reps = ScientificNotation(value_type="int", required=True)
+    pw = ScientificNotation(required=True)
 
 class BPSKSchema(WaveGeneric):
     bit_length = ScientificNotation(required=True)
-    num_bits = ScientificNotation(value_type="int", required=True)
+    num_pulses = ScientificNotation(value_type="int", required=True)
+    pulse_reps = ScientificNotation(value_type="int", required=True)
     correlation = fields.String(required=True, validate=validate.OneOf(["barker", "mls"]))
+    num_bits = ScientificNotation(value_type="int", required=True)
+    cutoff_freq = ScientificNotation(required=True)
+    num_taps = ScientificNotation(value_type="int", required=True)

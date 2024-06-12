@@ -24,7 +24,7 @@
             {"label": "Signal Length:", "name": "signal_length", "value": "0.25"},
             {"label": "Number Pulses:", "name": "num_pulses", "value": "10"},
             {"label": "Pulse Width (microsec):", "name": "pw", "value": "500"},
-            {"label": "Pulse Repetitions:", "name": "pulse_reps", "value": "5"}, 
+            {"label": "Pulse Repetitions:", "name": "pulse_reps", "value": "5"},
             {"label": "Amplitude", "name": "amplitude", "value" : "2000"}
         ]
     },
@@ -50,19 +50,6 @@
         "filterField": [
             {"label": "Cutoff Frequency:", "name": "cutoff_freq", "value": 20},
             {"label": "Number of Taps:", "name": "num_taps", "value": 5}
-        ] 
-    },
-    {
-        "id": "radar",
-        "name": "Radar Pulse",
-        "action": "/generate/radar",
-        "fields": [
-            {"label": "Sample Rate:", "name": "sample_rate", "value": "50000000"},
-            {"label": "Bit Length:", "name": "bit_length", "value": "0.0000005"},
-            {"label": "Number of Bits:", "name": "num_bits", "value": "4"},
-            {"label": "Amplitude:", "name": "amplitude", "value": "2000"},
-            {"label": "PRI:", "name": "pri", "value": "0.0001"},
-            {"label": "Number of Pulses:", "name": "num_pulses", "value": "2"}
         ]
     }
 ]

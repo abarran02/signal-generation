@@ -55,7 +55,7 @@ def random_tap_sequence(num_bits: int) -> list[list[int]]:
 
 def generate_iq_taps(num_bits, sample_rate, bit_length, pri, correlation):
     iq = []
-    for i in range(num_bits-1): #ask Emerson about the range value 
+    for _ in range(num_bits-1): #ask Emerson about the range value
         temp = generate_pulse(num_bits, sample_rate, bit_length,correlation)
         n_zeros = pri - temp
         new_val = temp - n_zeros #need to double check output
@@ -65,7 +65,7 @@ def generate_iq_taps(num_bits, sample_rate, bit_length, pri, correlation):
 def generate_pulse(num_bits, sample_rate, bit_length, correlation):
     taps = random_tap_sequence(num_bits)
     if correlation == 'mls':
-        seq = maximal_length_sequence(num_bits, np.array(taps)) 
+        seq = maximal_length_sequence(num_bits, np.array(taps))
     else:
         seq = barker_code(num_bits)
     temp = generate_bpsk(seq, sample_rate, bit_length)
