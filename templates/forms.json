@@ -2,33 +2,55 @@
     {
         "id": "cw",
         "name": "Continuous Wave",
+        "filter": false,
         "action": "/generate/cw",
         "fields": [
             {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "1000"},
-            {"label": "Signal Length (s):", "name": "signal_length", "value": "1"}
+            {"label": "Signal Length (s):", "name": "signal_length", "value": "1"},
+            {"label": "Pulse Width (microsec):", "name": "pw", "value": "500"},
+            {"label": "Pulse Repetition Interval:", "name": "signal_length", "value": "1"},
+            {"label": "Amplitude", "name": "amplitude", "value" : "2000"}
         ]
     },
     {
         "id": "lfm",
         "name": "Linear Frequency Modulated",
+        "filter": false,
         "action": "/generate/lfm",
         "fields": [
             {"label": "Sample Rate:", "name": "sample_rate", "value": "1000"},
             {"label": "Start Frequency:", "name": "fstart", "value": "10"},
             {"label": "Stop Frequency:", "name": "fstop", "value": "100"},
-            {"label": "Signal Length:", "name": "signal_length", "value": "0.25"}
+            {"label": "Signal Length:", "name": "signal_length", "value": "0.25"},
+            {"label": "Number Pulses:", "name": "num_pulses", "value": "10"},
+            {"label": "Pulse Width (microsec):", "name": "pw", "value": "500"},
+            {"label": "Pulse Repetitions:", "name": "pulse_reps", "value": "5"}, 
+            {"label": "Amplitude", "name": "amplitude", "value" : "2000"}
         ]
     },
     {
         "id": "bpsk",
+        "filter": true,
         "name": "Binary Phase Shift Keying",
         "action": "/generate/bpsk",
         "fields": [
             {"label": "Sample Rate:", "name": "sample_rate", "value": "50000000"},
             {"label": "Bit Length:", "name": "bit_length", "value": "0.0000005"},
-            {"label": "Number of Bits:", "name": "num_bits", "value": "4"},
-            {"label": "Sequencing Type:", "name": "seq_type", "value": "Maximal Length Sequence (MLS)"}
-        ]
+            {"label": "Number Pulses:", "name": "num_pulses", "value": "10"},
+            {"label": "Pulse Repetitions:", "name": "pulse_reps", "value": "5"},
+            {"label": "Amplitude", "name": "amplitude", "value": "2000"},
+            {"label": "Sequencing Type:", "name": "correlation", "type": "dropdown",
+                "options": [
+                    {"label": "Maximum Length Sequencing (MLS)", "name": "mls", "options": [4, 5, 6, 7, 8, 9]},
+                    {"label": "Barker Code", "name": "barker", "options": [2, 3, 4, 5, 7, 11, 13]}
+                ]
+            },
+            {"label": "Number of Bits:", "name": "num_bits", "type": "dropdown", "react": "correlation"}
+        ],
+        "filterField": [
+            {"label": "Cutoff Frequency:", "name": "cutoff_freq", "value": 20},
+            {"label": "Number of Taps:", "name": "num_taps", "value": 5}
+        ] 
     },
     {
         "id": "radar",

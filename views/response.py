@@ -49,6 +49,7 @@ def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: st
         ax.set_title(f"{abbr.upper()} Signal in Time Domain")
         ax.set_xlabel("Time (s)")
         ax.set_ylabel("Amplitude")
+        ax.legend()
     elif axes.lower() == "ivq":
         ax.plot(np.real(pulse), np.imag(pulse))
         ax.set_title(f"{abbr.upper()} In-phase vs Quadrature")
@@ -56,8 +57,6 @@ def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: st
         ax.set_ylabel("Quadrature (Q)")
     else:
         return {"errors": "Invalid graph axes request"}, 400
-
-    ax.legend()
 
     buf = BytesIO()
     fig.savefig(buf, format="png")
@@ -76,6 +75,7 @@ def create_three_dim_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], a
                         z = t,
                         title = "3D Representation of " + abbr.upper()
                         )
+
     fig.update_layout(height = 800)
     fig.update_traces(marker=dict(size=5)) #size of markers
     fig_html = fig.to_html()

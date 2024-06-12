@@ -4,46 +4,97 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Form</title>
-  <link rel="stylesheet" href = "/static/forms.css" />
+  <link rel="stylesheet" href="/static/css/forms.css" />
+  <link rel="stylesheet" href="/static/css/foundation.min.css" />
 </head>
 <body>
-<h3>Select Type:</h3>
-{% for f in forms %}
-  <label><input type="radio" name="formSwitch" value="{{ f.id }}">{{ f.name }}</label>
-{% endfor %}
-<h3>Inputs:</h3>
-{% for f in forms %}
-  <form id="{{ f.id }}" action="{{ f.action }}" method="get" class="form">
-    {% for field in f.fields %}
-        {% if (field.label != "Sequencing Type:") %}
-          <div class="form-group">
-            <label for="{{ field.name }}">{{ field.label }}</label>
-            <input type="text" id="{{ field.name }}" name="{{ field.name }}" value="{{ field.value }}" required>
-          </div>
-        {% else %}
-          <label for="seq_type">Sequencing Type:</label>
-            <div class = "dropdown">
-              <select id="seq_type" name="seq_type" style="font-size: 16px">
-                <option value="mls">Maximum Length Sequencing (MLS)</option>
-                <option value="barker">Barker Code</option>  
-              </select>
-            </div>
-        {% endif %}
+
+<div class="content grid-x grid-padding-x align-center">
+  <div class="cell small-5">
+    <h4>Select Type:</h4>
+    {% for f in forms %}
+      <label><input type="radio" name="formSwitch" value="{{ f.id }}">{{ f.name }}</label>
     {% endfor %}
-    <div class="form-group" style="display:none;">
-      <input type="text" id="form" name="form" value="sc16" required>
-    </div>
-    <button type="button" onclick="displayImage()">Show Waveform</button>
-    <button type="button" onclick="redirectInteractive()">View Interactive</button>
-    <button type="button" onclick="redirectThreeDim()">View Three-Dimensional</button>
-    <button type="submit">Download .sc16</button>
-  </form>
-{% endfor %}
 
-<img id="dynamicIQvT" style="display:none;">
-<img id="dynamicIvQ" style="display:none;">
+    <h4>Inputs:</h4>
 
-<script src = "/static/forms_redirection.js" charset="utf-8" ></script>
+    {% for f in forms %}
+      <form id="{{ f.id }}" action="{{ f.action }}" method="get" class="form">
+        {% for field in f.fields %}
+          {% if field.type == "dropdown" %}
+            <div class="form-group">
+              <label for="{{ field.name }}">{{ field.label }}</label>
+              <div class="dropdown">
+                <select id="{{ field.name }}" name="{{ field.name }}">
+                  {% for o in field.options %}
+                    <option value="{{ o.name }}">{{ o.label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          {% else %}
+            <div class="form-group">
+              <label for="{{ field.name }}">{{ field.label }}</label>
+              <input type="text" id="{{ field.name }}" name="{{ field.name }}" value="{{ field.value }}" required>
+            </div>
+          {% endif %}
+        {% endfor %}
+        {% if f.id == "bpsk" %}
+          <h4>Filtering:</h4>
+          <div class="container">
+            {% for fField in f.filterField %}
+              <div class="sub">
+                <label for="{{ fField.name }}">{{ fField.label }}</label>
+                <input type="text" id="{{ fField.name }}" name="{{ fField.name }}" value="{{ fField.value }}" required>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <div class="form-group" style="display:none;">
+          <input type="text" id="form" name="form" value="sc16" required>
+        </div>
 
+        <div class="button-group">
+          <button type="button" class="button" onclick="displayImage()">Show Waveform</button>
+          <button type="button" class="button" onclick="redirectInteractive()">View Interactive</button>
+          <button type="button" class="button" onclick="redirectThreeDim()">View Three-Dimensional</button>
+          <button type="submit" class="button">Download .sc16</button>
+        </div>
+      </form>
+    {% endfor %}
+  </div>
+
+  <div class="cell small-5">
+    <img id="dynamicIQvT" style="display:none;">
+    <img id="dynamicIvQ" style="display:none;">
+  </div>
+</div>
+
+<script>
+  let dropdownSuboptions = {};
+  {% for f in forms %}
+    {% for field in f.fields %}
+      {% if "react" in field %}
+        {% set result = f.fields|selectattr("name", "equalto", field.react)|list %}
+        document.getElementById({{ field.react|tojson }}).classList.add("parent");
+
+        dropdownSuboptions.{{ field.react }} = {
+          "subelementId": {{ field.name|tojson }},
+          "suboptions": {}
+        };
+
+        {% for option in result[0].options %}
+          dropdownSuboptions.{{ field.react }}.suboptions.{{ option.name }} = {{ option.options }};
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+</script>
+
+<script src="/static/js/forms_redirection.js" charset="utf-8" ></script>
+<script src="/static/js/vendor/what-input.js"></script>
+<script src="/static/js/vendor/jquery.js"></script>
+<script src="/static/js/vendor/foundation.min.js"></script>
+<script src="/static/js/app.js"></script>
 </body>
 </html>
