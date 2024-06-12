@@ -24,8 +24,8 @@
           {% if field.type == "dropdown" %}
             <div class="form-group">
               <label for="{{ field.name }}">{{ field.label }}</label>
-              <div class = "dropdown">
-                <select id="{{ field.name }}" name="{{ field.name }}" style="font-size: 16px">
+              <div class="dropdown">
+                <select id="{{ field.name }}" name="{{ field.name }}">
                   {% for o in field.options %}
                     <option value="{{ o.name }}">{{ o.label }}</option>
                   {% endfor %}
@@ -59,6 +59,27 @@
     <img id="dynamicIvQ" style="display:none;">
   </div>
 </div>
+
+<script>
+  let dropdownSuboptions = {};
+  {% for f in forms %}
+    {% for field in f.fields %}
+      {% if "react" in field %}
+        {% set result = f.fields|selectattr("name", "equalto", field.react)|list %}
+        document.getElementById({{ field.react|tojson }}).classList.add("parent");
+
+        dropdownSuboptions.{{ field.react }} = {
+          "subelementId": {{ field.name|tojson }},
+          "suboptions": {}
+        };
+
+        {% for option in result[0].options %}
+          dropdownSuboptions.{{ field.react }}.suboptions.{{ option.name }} = {{ option.options }};
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+</script>
 
 <script src="/static/js/forms_redirection.js" charset="utf-8" ></script>
 <script src="/static/js/vendor/what-input.js"></script>

@@ -3,9 +3,13 @@ body {
 }
 
 .dropdown {
-    padding: 10;
-    font-size: 25;
-    margin-bottom: 15px;
+  padding: 10;
+  font-size: 25;
+}
+
+.dropdown > select {
+  margin-bottom: 0;
+  font-size: 16px;
 }
 
 .content {

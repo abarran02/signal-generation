@@ -26,22 +26,13 @@
         "fields": [
             {"label": "Sample Rate:", "name": "sample_rate", "value": "50000000"},
             {"label": "Bit Length:", "name": "bit_length", "value": "0.0000005"},
-            {"label": "Number of Bits:", "name": "num_bits", "type": "dropdown",
-                "options": [
-                    {"label": "4", "name": "4"},
-                    {"label": "5", "name": "5"},
-                    {"label": "6", "name": "6"},
-                    {"label": "7", "name": "7"},
-                    {"label": "8", "name": "8"},
-                    {"label": "9", "name": "9"}
-                ]
-            },
             {"label": "Sequencing Type:", "name": "correlation", "type": "dropdown",
                 "options": [
-                    {"label": "Maximum Length Sequencing (MLS)", "name": "mls"},
-                    {"label": "Barker Code", "name": "barker"}
+                    {"label": "Maximum Length Sequencing (MLS)", "name": "mls", "options": [4, 5, 6, 7, 8, 9]},
+                    {"label": "Barker Code", "name": "barker", "options": [2, 3, 4, 5, 7, 11, 13]}
                 ]
-            }
+            },
+            {"label": "Number of Bits:", "name": "num_bits", "type": "dropdown", "react": "correlation"}
         ]
     },
     {
