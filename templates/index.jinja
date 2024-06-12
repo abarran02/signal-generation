@@ -39,7 +39,17 @@
             </div>
           {% endif %}
         {% endfor %}
-
+        {% if f.id == "bpsk" %}
+          <h4>Filtering:</h4>
+          <div class="container">
+            {% for fField in f.filterField %}
+              <div class="sub">
+                <label for="{{ fField.name }}">{{ fField.label }}</label>
+                <input type="text" id="{{ fField.name }}" name="{{ fField.name }}" value="{{ fField.value }}" required>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
         <div class="form-group" style="display:none;">
           <input type="text" id="form" name="form" value="sc16" required>
         </div>

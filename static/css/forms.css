@@ -1,6 +1,15 @@
 body {
   font-family: Arial, sans-serif;
 }
+.container {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 1%;
+}
+.sub {
+  padding: 10;
+  margin-right: 10;
+}
 
 .dropdown {
     padding: 10;
