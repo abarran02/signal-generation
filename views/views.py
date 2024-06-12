@@ -43,10 +43,10 @@ def get_bpsk():
     try:
         data = schema.load(request.args)
         pri = data["bit_length"] * (2**(data["num_bits"]-1))
-        pulse = generate_pulse_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], "mls", pri, data["num_pulses"])
+        pulse = generate_pulse_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["correlation"], pri, data["num_pulses"])
         pulse = np.round(data["amplitude"] * pulse)
-        #iq = generate_iq_taps(data["cutoff_freq"], data["num_taps"], data["num_bits"], data["sample_rate"], data["bit_length"], pri, data["correlation"], data["num_pulses"], data["amplitude"])
-        #print(iq)
+        pulseIQ = generate_iq_taps(data["cutoff_freq"], data["num_taps"], data["num_bits"], data["sample_rate"], data["bit_length"], pri, data["correlation"], data["num_pulses"], data["amplitude"])
+        print(pulseIQ)
         return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"])
 
     except ValidationError as err:

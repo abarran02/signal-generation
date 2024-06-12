@@ -65,8 +65,8 @@ def generate_iq_taps(fc, num_taps, num_bits, sample_rate, bit_length, pri, corre
     return iq
 
 def generate_pulse_fbpsk(fc, num_taps, num_bits, sample_rate, bit_length, correlation, pri, num_pulses):
-    taps = random_tap_sequence(num_bits)
     if correlation == 'mls':
+        taps = random_tap_sequence(num_bits)
         seq = maximal_length_sequence(num_bits, np.array(taps)) 
     else:
         seq = barker_code(num_bits)
