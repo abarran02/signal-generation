@@ -3,6 +3,7 @@ import random
 import numpy as np
 from numpy.typing import NDArray
 from signal_utils.common.generate_bpsk import generate_bpsk
+import signal_utils as su
 
 """
 https://web.archive.org/web/20110806114215/http://homepage.mac.com/afj/taplist.html
@@ -53,22 +54,24 @@ def random_tap_sequence(num_bits: int) -> list[list[int]]:
     # inefficient subtraction on-the-fly but we can fix the data later
     return [x-1 for x in random.choice(possible_seqs)] #1-indexing
 
-def generate_iq_taps(num_bits, sample_rate, bit_length, pri, correlation):
+def generate_iq_taps(fc, num_taps, num_bits, sample_rate, bit_length, pri, correlation, num_pulses, amplitude):
     iq = []
-    for _ in range(num_bits-1): #ask Emerson about the range value
-        temp = generate_pulse(num_bits, sample_rate, bit_length,correlation)
+    for _ in range(num_bits-1): #ask Emerson about the range value 
+        temp = generate_pulse_fbpsk(fc, num_taps, num_bits, sample_rate, bit_length, correlation, pri, num_pulses)
+        temp = np.round(amplitude*temp)
         n_zeros = pri - temp
         new_val = temp - n_zeros #need to double check output
         iq.append(new_val)
     return iq
 
-def generate_pulse(num_bits, sample_rate, bit_length, correlation):
+def generate_pulse_fbpsk(fc, num_taps, num_bits, sample_rate, bit_length, correlation, pri, num_pulses):
     taps = random_tap_sequence(num_bits)
     if correlation == 'mls':
-        seq = maximal_length_sequence(num_bits, np.array(taps))
+        seq = maximal_length_sequence(num_bits, np.array(taps)) 
     else:
         seq = barker_code(num_bits)
-    temp = generate_bpsk(seq, sample_rate, bit_length)
+    temp = su.radar_pulse.user_generate_pulse(fc, num_taps, seq, sample_rate, bit_length, pri, num_pulses) #pulse could either be generate_bpsk or generate_lfm
+    #unfiltered version of temp: temp = generate_bpsk(seq, sample_rate, bit_length)
     return temp
 
 def maximal_length_sequence(num_bits: int, taps: NDArray[np.int_]) -> NDArray[np.int_]:

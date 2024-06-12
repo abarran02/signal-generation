@@ -3,7 +3,7 @@ from flask import Blueprint, request
 from marshmallow import ValidationError
 
 import signal_utils as su
-from signal_utils.common.sequences import maximal_length_sequence, random_tap_sequence, generate_iq_taps, generate_pulse
+from signal_utils.common.sequences import maximal_length_sequence, random_tap_sequence, generate_iq_taps, generate_pulse_fbpsk
 from signal_utils.common.generate_bpsk import generate_bpsk 
 
 from .response import output_cases
@@ -40,13 +40,13 @@ def get_lfm():
 @wave_views.route("/bpsk", methods=["GET"])
 def get_bpsk():
     schema = BPSKSchema()
-
     try:
         data = schema.load(request.args)
-        pulse = generate_pulse(data["num_bits"], data["sample_rate"], data["bit_length"], "mls")
         pri = data["bit_length"] * (2**(data["num_bits"]-1))
-        iq = generate_iq_taps(data["num_bits"], data["sample_rate"], data["bit_length"], pri, data["correlation"])
-        print(iq)
+        pulse = generate_pulse_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], "mls", pri, data["num_pulses"])
+        pulse = np.round(data["amplitude"] * pulse)
+        #iq = generate_iq_taps(data["cutoff_freq"], data["num_taps"], data["num_bits"], data["sample_rate"], data["bit_length"], pri, data["correlation"], data["num_pulses"], data["amplitude"])
+        #print(iq)
         return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"])
 
     except ValidationError as err:
