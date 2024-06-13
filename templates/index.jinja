@@ -76,10 +76,10 @@
     {% for field in f.fields %}
       {% if "react" in field %}
         {% set result = f.fields|selectattr("name", "equalto", field.react)|list %}
-        document.getElementById({{ field.react|tojson }}).classList.add("parent");
+        document.getElementById({{ field.react|tojson|safe }}).classList.add("parent");
 
         dropdownSuboptions.{{ field.react }} = {
-          "subelementId": {{ field.name|tojson }},
+          "subelementId": {{ field.name|tojson|safe }},
           "suboptions": {}
         };
 

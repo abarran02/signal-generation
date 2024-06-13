@@ -23,9 +23,9 @@ def read_input_params(filename: Path) -> tuple[int, float, int, list[int], int, 
     return input_params['sample_rate'], input_params['bit_length'], input_params['num_bits'], input_params['taps'], \
         input_params['amplitude'], input_params['pri'], input_params['num_pulses']
 
-def user_generate_pulse(fc, num_taps, seq, sample_rate, bit_length, pri, num_pulses):
+def generate_filtered_pulse(fc: float, num_taps: int, seq: NDArray[np.int_], sample_rate: int, bit_length: float, pri: float, num_pulses: int) -> NDArray[np.complex_]:
     samples_per_pulse = int(sample_rate * pri)
-        
+
     pulse = generate_bpsk(seq, sample_rate, bit_length)
 
     pulse_buffer = int(samples_per_pulse - pulse.shape[0])
@@ -36,7 +36,7 @@ def user_generate_pulse(fc, num_taps, seq, sample_rate, bit_length, pri, num_pul
 
     w = blackman_nuttall_window(num_taps)
     lpf = create_fir_filter(fc, w)
-    
+
     pulse_filt = np.convolve(pulse, lpf[::-1], "same")
 
     # normalize the pulse
@@ -47,7 +47,6 @@ def user_generate_pulse(fc, num_taps, seq, sample_rate, bit_length, pri, num_pul
     pulse_seq = np.tile(pulse_filt, [num_pulses])
 
     return pulse_seq
-
 
 def generate_pulse(seq: NDArray[np.int_], sample_rate: int, bit_length: float, pri: float, num_pulses: int) -> NDArray[np.complex_]:
     samples_per_pulse = int(sample_rate * pri)

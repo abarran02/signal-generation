@@ -2,7 +2,6 @@ import random
 
 import numpy as np
 from numpy.typing import NDArray
-from signal_utils.common.generate_bpsk import generate_bpsk
 import signal_utils as su
 
 """
@@ -39,7 +38,7 @@ https://in.ncu.edu.tw/ncume_ee/digilogi/prbs.htm
 - 8 taps: [9,8,7,6,5,4,3,1]
 """
 
-def random_tap_sequence(num_bits: int) -> list[list[int]]:
+def random_tap_sequence(num_bits: int) -> list[int]:
     max_uniques = {
         4: [[4,3]],
         5: [[5,4,3,2], [5,4,3,1]],
@@ -54,25 +53,15 @@ def random_tap_sequence(num_bits: int) -> list[list[int]]:
     # inefficient subtraction on-the-fly but we can fix the data later
     return [x-1 for x in random.choice(possible_seqs)] #1-indexing
 
-def generate_iq_taps(fc, num_taps, num_bits, sample_rate, bit_length, pri, correlation, num_pulses, amplitude):
-    iq = []
-    for _ in range(num_bits-1): #ask Emerson about the range value 
-        temp = generate_pulse_fbpsk(fc, num_taps, num_bits, sample_rate, bit_length, correlation, pri, num_pulses)
-        temp = np.round(amplitude*temp)
-        n_zeros = pri - temp
-        new_val = temp - n_zeros #need to double check output
-        iq.append(new_val)
-    return iq
-
-def generate_pulse_fbpsk(fc, num_taps, num_bits, sample_rate, bit_length, correlation, pri, num_pulses):
-    if correlation == 'mls':
+def generate_fbpsk(fc: float, num_taps: int, num_bits: int, sample_rate: int, bit_length: float, sequence_type: str, pri: float, num_pulses: int) -> NDArray[np.complex_]:
+    if sequence_type == 'mls':
         taps = random_tap_sequence(num_bits)
-        seq = maximal_length_sequence(num_bits, np.array(taps)) 
+        seq = maximal_length_sequence(num_bits, np.array(taps))
     else:
         seq = barker_code(num_bits)
-    temp = su.radar_pulse.user_generate_pulse(fc, num_taps, seq, sample_rate, bit_length, pri, num_pulses) #pulse could either be generate_bpsk or generate_lfm
-    #unfiltered version of temp: temp = generate_bpsk(seq, sample_rate, bit_length)
-    return temp
+
+    # pulse could either be generate_bpsk or generate_lfm
+    return su.radar_pulse.generate_filtered_pulse(fc, num_taps, seq, sample_rate, bit_length, pri, num_pulses)
 
 def maximal_length_sequence(num_bits: int, taps: NDArray[np.int_]) -> NDArray[np.int_]:
 

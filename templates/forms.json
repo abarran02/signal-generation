@@ -39,13 +39,13 @@
             {"label": "Number Pulses:", "name": "num_pulses", "value": "10"},
             {"label": "Pulse Repetitions:", "name": "pulse_reps", "value": "5"},
             {"label": "Amplitude", "name": "amplitude", "value": "2000"},
-            {"label": "Sequencing Type:", "name": "correlation", "type": "dropdown",
+            {"label": "Sequencing Type:", "name": "sequence_type", "type": "dropdown",
                 "options": [
                     {"label": "Maximum Length Sequencing (MLS)", "name": "mls", "options": [4, 5, 6, 7, 8, 9]},
                     {"label": "Barker Code", "name": "barker", "options": [2, 3, 4, 5, 7, 11, 13]}
                 ]
             },
-            {"label": "Number of Bits:", "name": "num_bits", "type": "dropdown", "react": "correlation"}
+            {"label": "Number of Bits:", "name": "num_bits", "type": "dropdown", "react": "sequence_type"}
         ],
         "filterField": [
             {"label": "Cutoff Frequency:", "name": "cutoff_freq", "value": 20},

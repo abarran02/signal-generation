@@ -26,18 +26,6 @@ Generates a Continuous Wave of constant amplitude and frequency.
 | --- | --- | --- |
 | signal_length | float | Length of output signal in seconds |
 
-### [GET] /generate/radar
-Generates a Radar Pulse.
-
-#### Parameters
-| Name | Type | Description |
-| --- | --- | --- |
-| bit_length | float | Symbol duration in seconds |
-| num_bits | int | Number of bits to use when randomly generating a maximal length tap sequence |
-| amplitude | int | Maximum waveform magnitude |
-| pri | float | Time interval between two adjacent pulses in seconds |
-| num_pulses | int | Number of radar pulses to generate |
-
 ### [GET] /generate/lfm
 Generates a Linear Frequency Modulated pulse.
 
@@ -56,3 +44,13 @@ Generates a Binary Phase-Shift Keying pulse.
 | --- | --- | --- |
 | bit_length | float | Symbol duration in seconds |
 | num_bits | int | Number of bits to use when randomly generating a maximal length tap sequence |
+| amplitude | int | Maximum waveform magnitude |
+| pri | float | Time interval between two adjacent pulses in seconds |
+| num_pulses | int | Number of pulses to generate |
+| pulse_reps | int | Repetitions within each pulse |
+
+#### Filter Parameters
+| Name | Type | Description |
+| --- | --- | --- |
+| cutoff_freq | float | Pass filter edge in hertz |
+| num_taps | int | Number of taps to apply to the filter window |

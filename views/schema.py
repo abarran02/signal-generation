@@ -52,7 +52,7 @@ class BPSKSchema(WaveGeneric):
     bit_length = ScientificNotation(required=True)
     num_pulses = ScientificNotation(value_type="int", required=True)
     pulse_reps = ScientificNotation(value_type="int", required=True)
-    correlation = fields.String(required=True, validate=validate.OneOf(["barker", "mls"]))
+    sequence_type = fields.String(required=True, validate=validate.OneOf(["barker", "mls"]))
     num_bits = ScientificNotation(value_type="int", required=True)
     cutoff_freq = ScientificNotation(required=True)
     num_taps = ScientificNotation(value_type="int", required=True)
