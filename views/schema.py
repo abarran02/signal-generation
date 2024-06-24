@@ -43,10 +43,9 @@ class CWSchema(WaveGeneric):
 class LFMSchema(WaveGeneric):
     fstart = ScientificNotation(required=True)
     fstop = ScientificNotation(required=True)
-    signal_length = ScientificNotation(required=True)
     num_pulses = ScientificNotation(value_type="int", required=True)
-    pulse_reps = ScientificNotation(value_type="int", required=True)
     pw = ScientificNotation(required=True)
+    pri = ScientificNotation(required=True)
 
 class BPSKSchema(WaveGeneric):
     bit_length = ScientificNotation(required=True)

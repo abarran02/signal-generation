@@ -6,9 +6,8 @@
         "action": "/generate/cw",
         "fields": [
             {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "1000"},
-            {"label": "Signal Length (s):", "name": "signal_length", "value": "1"},
-            {"label": "Pulse Width (microsec):", "name": "pw", "value": "500"},
-            {"label": "Pulse Repetition Interval:", "name": "signal_length", "value": "1"},
+            {"label": "Pulse Width (s):", "name": "pw", "value": "0.005"},
+            {"label": "Pulse Repetition Interval (s):", "name": "signal_length", "value": "1"},
             {"label": "Amplitude", "name": "amplitude", "value" : "2000"}
         ]
     },
@@ -18,13 +17,12 @@
         "filter": false,
         "action": "/generate/lfm",
         "fields": [
-            {"label": "Sample Rate:", "name": "sample_rate", "value": "1000"},
-            {"label": "Start Frequency:", "name": "fstart", "value": "10"},
-            {"label": "Stop Frequency:", "name": "fstop", "value": "100"},
-            {"label": "Signal Length:", "name": "signal_length", "value": "0.25"},
+            {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "1000"},
+            {"label": "Start Frequency (Hz):", "name": "fstart", "value": "10"},
+            {"label": "Stop Frequency (Hz):", "name": "fstop", "value": "100"},
             {"label": "Number Pulses:", "name": "num_pulses", "value": "10"},
-            {"label": "Pulse Width (microsec):", "name": "pw", "value": "500"},
-            {"label": "Pulse Repetitions:", "name": "pulse_reps", "value": "5"},
+            {"label": "Pulse Width (s):", "name": "pw", "value": "500"},
+            {"label": "Pulse Repetition Interval (s):", "name": "pri", "value": "5"},
             {"label": "Amplitude", "name": "amplitude", "value" : "2000"}
         ]
     },
@@ -34,10 +32,10 @@
         "name": "Binary Phase Shift Keying",
         "action": "/generate/bpsk",
         "fields": [
-            {"label": "Sample Rate:", "name": "sample_rate", "value": "50000000"},
-            {"label": "Bit Length:", "name": "bit_length", "value": "0.0000005"},
+            {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "50000000"},
+            {"label": "Bit Length (s):", "name": "bit_length", "value": "0.0000005"},
             {"label": "Number Pulses:", "name": "num_pulses", "value": "10"},
-            {"label": "Pulse Repetitions:", "name": "pulse_reps", "value": "5"},
+            {"label": "Pulse Repetition Interval (s):", "name": "pulse_reps", "value": "5"},
             {"label": "Amplitude", "name": "amplitude", "value": "2000"},
             {"label": "Sequencing Type:", "name": "sequence_type", "type": "dropdown",
                 "options": [
@@ -48,7 +46,7 @@
             {"label": "Number of Bits:", "name": "num_bits", "type": "dropdown", "react": "sequence_type"}
         ],
         "filterField": [
-            {"label": "Cutoff Frequency:", "name": "cutoff_freq", "value": 20},
+            {"label": "Cutoff Frequency (Hz):", "name": "cutoff_freq", "value": 20},
             {"label": "Number of Taps:", "name": "num_taps", "value": 5}
         ]
     }
