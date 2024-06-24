@@ -18,11 +18,11 @@
         "action": "/generate/lfm",
         "fields": [
             {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "1000"},
-            {"label": "Start Frequency (Hz):", "name": "fstart", "value": "10"},
+            {"label": "Start Frequency (Hz):", "name": "fstart", "value": "-100"},
             {"label": "Stop Frequency (Hz):", "name": "fstop", "value": "100"},
             {"label": "Number Pulses:", "name": "num_pulses", "value": "10"},
             {"label": "Pulse Width (s):", "name": "pw", "value": "500"},
-            {"label": "Pulse Repetition Interval (s):", "name": "pri", "value": "5"},
+            {"label": "Pulse Repetition Interval (s):", "name": "pri", "value": "0.25"},
             {"label": "Amplitude", "name": "amplitude", "value" : "2000"}
         ]
     },

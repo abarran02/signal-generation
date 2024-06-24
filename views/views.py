@@ -29,9 +29,9 @@ def get_lfm():
 
     try:
         data = schema.load(request.args)
-        pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["signal_length"])
+        pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pri"])
 
-        return output_cases(pulse, data["form"], data["signal_length"], "lfm", data["axes"])
+        return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"])
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
