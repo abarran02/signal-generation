@@ -17,6 +17,7 @@ def get_cw():
     try:
         data = schema.load(request.args)
         pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["signal_length"])
+        pulse = np.round(data["amplitude"] * pulse)
 
         return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"])
 
@@ -30,6 +31,7 @@ def get_lfm():
     try:
         data = schema.load(request.args)
         pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pri"])
+        pulse = np.round(data["amplitude"] * pulse)
 
         return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"])
 
