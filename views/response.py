@@ -51,7 +51,7 @@ def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: st
         ax.set_ylabel("Amplitude")
         ax.legend()
     elif axes.lower() == "ivq":
-        ax.plot(np.real(pulse), np.imag(pulse))
+        ax.scatter(np.real(pulse), np.imag(pulse) , s=15)
         ax.set_title(f"{abbr.upper()} In-phase vs Quadrature")
         ax.set_xlabel("In-phase (I)")
         ax.set_ylabel("Quadrature (Q)")
