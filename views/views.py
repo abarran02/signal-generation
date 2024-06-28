@@ -17,9 +17,9 @@ def get_cw():
     try:
         data = schema.load(request.args)
         pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["signal_length"])
-        pulse = np.round(data["amplitude"] * pulse)
+        pulse = get_pulse_blanks(pulse, 4, data["amplitude"])
 
-        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 4) #1 is temp num_pulses count
+        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 4) #4 is temp num_pulses count
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
@@ -31,9 +31,7 @@ def get_lfm():
     try:
         data = schema.load(request.args)
         pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pri"], data["num_pulses"])
-        pulse = np.round(data["amplitude"] * pulse)
-        pulse = np.append(pulse, np.zeros(len(pulse)))
-        pulse = np.tile(pulse, data["num_pulses"])
+        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"])
 
         return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"], data["num_pulses"])
 
@@ -48,9 +46,17 @@ def get_bpsk():
 
         pri = data["bit_length"] * (2**(data["num_bits"]-1))
         pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], pri, data["num_pulses"])
-        pulse = np.round(data["amplitude"] * pulse)
+        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"])
 
-        return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"])
+        return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"]) 
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
+
+def get_pulse_blanks(pulse, num_pulses, amplitude):
+    #returns the pulse with blanks spaces according to the number of pulses
+    pulse = np.round(amplitude * pulse)
+    pulse_with_zeros = np.append(pulse, np.zeros(len(pulse)))
+    pulse = np.tile(pulse_with_zeros, num_pulses)
+
+    return pulse

@@ -30,6 +30,3 @@ def generate_cw(sample_rate: int, signal_length: float) -> NDArray[np.complex_]:
     iq = iq + 1j * np.zeros(iq.shape[0])
     
     return iq
-
-def dup_wave(iq: NDArray[np.complex_], num_pulses: int):
-   return np.tile(iq, [num_pulses])

@@ -44,14 +44,14 @@ def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: st
     ax = fig.subplots()
 
     if axes.lower() == "iqvt":
-        ax.plot(t, np.real(pulse), label="In-phase (I)")
-        ax.plot(t, np.imag(pulse), label="Quadrature (Q)", linestyle="--")
+        ax.plot(t, np.real(pulse), label="In-phase (I)", linewidth = '0.75')
+        ax.plot(t, np.imag(pulse), label="Quadrature (Q)", linestyle="--", linewidth= "0.75")
         ax.set_title(f"{abbr.upper()} Signal in Time Domain")
         ax.set_xlabel("Time (s)")
         ax.set_ylabel("Amplitude")
         ax.legend()
     elif axes.lower() == "ivq":
-        ax.scatter(np.real(pulse), np.imag(pulse) , s=15)
+        ax.scatter(np.real(pulse), np.imag(pulse) , s=10)
         ax.set_title(f"{abbr.upper()} In-phase vs Quadrature")
         ax.set_xlabel("In-phase (I)")
         ax.set_ylabel("Quadrature (Q)")

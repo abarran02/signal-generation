@@ -32,10 +32,10 @@
         "name": "Binary Phase Shift Keying",
         "action": "/generate/bpsk",
         "fields": [
-            {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "50000000"},
-            {"label": "Bit Length (s):", "name": "bit_length", "value": "0.0000005"},
-            {"label": "Number Pulses:", "name": "num_pulses", "value": "10"},
-            {"label": "Pulse Repetition Interval (s):", "name": "pulse_reps", "value": "5"},
+            {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "20e6"},
+            {"label": "Bit Length (s):", "name": "bit_length", "value": "5e-7"},
+            {"label": "Number Pulses:", "name": "num_pulses", "value": "4"},
+            {"label": "Pulse Repetition Interval (s):", "name": "pulse_reps", "value": "20e-6"},
             {"label": "Amplitude", "name": "amplitude", "value": "2000"},
             {"label": "Sequencing Type:", "name": "sequence_type", "type": "dropdown",
                 "options": [
@@ -47,7 +47,7 @@
         ],
         "filterField": [
             {"label": "Cutoff Frequency (Hz):", "name": "cutoff_freq", "value": 20},
-            {"label": "Number of Taps:", "name": "num_taps", "value": 5}
+            {"label": "Number of Taps:", "name": "num_taps", "value": 2}
         ]
     }
 ]
