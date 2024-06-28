@@ -82,19 +82,19 @@ def create_three_dim_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], a
 
     return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 
-def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str, axes: str) -> Response:
+def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str, axes: str, num_pulses: int) -> Response:
     if form == "sc16":
         pulse_bytes = get_iq_bytes(pulse)
         return send_bytes_response(pulse_bytes, abbr)
 
     elif form == "png":
-        t = np.linspace(0, tstop, pulse.shape[0])
+        t = np.linspace(0, tstop*num_pulses, pulse.shape[0])
         return send_plot_image(pulse, t, abbr, axes)
 
     elif form == "graph":
-        t = np.linspace(0, tstop, pulse.shape[0])
+        t = np.linspace(0, tstop*num_pulses, pulse.shape[0])
         return send_interactive_graph(pulse, t, abbr)
 
     elif form == "threeDim":
-        t = np.linspace(0, tstop, pulse.shape[0])
+        t = np.linspace(0, tstop*num_pulses, pulse.shape[0])
         return create_three_dim_graph(pulse, t, abbr)

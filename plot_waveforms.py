@@ -23,7 +23,7 @@ def plot_radar_pulse(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.f
 def plot_cw(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.float_]]:
     sample_rate, signal_length, num_pulses = su.continuous_wave.read_input_params(filename)
     samples_per_pulse = int(sample_rate * signal_length)
-    pulse = su.continuous_wave.generate_cw(sample_rate, signal_length, num_pulses) #used to be iq_data
+    pulse = su.continuous_wave.generate_cw(sample_rate, signal_length) #used to be iq_data
     pulse_buffer = int(samples_per_pulse - pulse.shape[0])
     if (pulse_buffer < 0):
         pulse_buffer = 0
@@ -54,11 +54,8 @@ def plot_lfm(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.float_]]:
     #add arg for num pulses, use tile on iq pulse_seq = np.tile(pulse_filt, [num_pulses])
     #create tiling func
 
-    iq_data = np.append(np.empty(len(iq_data)))
-    iq_with_blanks = np.tile(iq_data, num_pulses) #to add duplicate waves
-
     t = np.linspace(0, pri, iq_data.shape[0])
-    return iq_with_blanks, t
+    return iq_data, t
 
 
 if __name__ == "__main__":
