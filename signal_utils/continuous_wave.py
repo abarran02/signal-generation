@@ -20,7 +20,7 @@ def read_input_params(filename: Path) -> tuple[int, float]:
 
     return input_params['sample_rate'], input_params['signal_length']
 
-def generate_cw(sample_rate: int, signal_length: float) -> NDArray[np.complex_]:
+def generate_cw(sample_rate: int, signal_length: float) -> NDArray[np.complex64]:
 
     num_samples = math.floor(sample_rate * signal_length)
 

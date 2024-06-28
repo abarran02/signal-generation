@@ -9,7 +9,7 @@ import signal_utils as su
 from signal_utils import common
 
 
-def plot_radar_pulse(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.float_]]:
+def plot_radar_pulse(filename: Path) -> tuple[NDArray[np.complex64], NDArray[np.float16]]:
     sample_rate, bit_length, num_bits, sequence_taps, amplitude, pri, num_pulses = su.radar_pulse.read_input_params(filename)
     seq = common.sequences.maximal_length_sequence(num_bits, np.array(sequence_taps))
     iq_data = su.radar_pulse.generate_pulse(seq, sample_rate, bit_length, pri, num_pulses)
@@ -19,14 +19,14 @@ def plot_radar_pulse(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.f
     t = np.linspace(0, bit_length, iq_data.shape[0])
     return iq_data, t
 
-def plot_cw(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.float_]]:
+def plot_cw(filename: Path) -> tuple[NDArray[np.complex64], NDArray[np.float16]]:
     sample_rate, signal_length = su.continuous_wave.read_input_params(filename)
     iq_data = su.continuous_wave.generate_cw(sample_rate, signal_length)
 
     t = np.linspace(0, signal_length, iq_data.shape[0])
     return iq_data, t
 
-def plot_lfm(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.float_]]:
+def plot_lfm(filename: Path) -> tuple[NDArray[np.complex64], NDArray[np.float16]]:
     sample_rate, fstart, fstop, signal_length = su.linear_frequency_modulated.read_input_params(filename)
     iq_data = su.linear_frequency_modulated.generate_lfm(sample_rate, fstart, fstop, signal_length)
 

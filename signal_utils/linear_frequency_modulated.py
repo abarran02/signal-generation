@@ -20,7 +20,7 @@ def read_input_params(filename: Path) -> tuple[int, float, float, float]:
 
     return input_params['sample_rate'], input_params['fstart'], input_params['fstop'], input_params['signal_length']
 
-def generate_lfm(sample_rate: int, f_start: float, f_stop: float, signal_length: float) -> NDArray[np.complex_]:
+def generate_lfm(sample_rate: int, f_start: float, f_stop: float, signal_length: float) -> NDArray[np.complex64]:
 
     # calculate the number of samples in the RF signal
     num_samples = math.floor(sample_rate * signal_length)
