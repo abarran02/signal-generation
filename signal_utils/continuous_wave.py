@@ -20,7 +20,7 @@ def read_input_params(filename: Path) -> tuple[int, float]:
 
     return input_params['sample_rate'], input_params['signal_length']
 
-def generate_cw(sample_rate: int, signal_length: float) -> NDArray[np.complex_]:
+def generate_cw(sample_rate: int, signal_length: float, num_pulses: int) -> NDArray[np.complex_]:
 
     num_samples = math.floor(sample_rate * signal_length)
 
@@ -29,4 +29,9 @@ def generate_cw(sample_rate: int, signal_length: float) -> NDArray[np.complex_]:
     # add the complex component
     iq = iq + 1j * np.zeros(iq.shape[0])
 
+    return dup_wave(iq, num_pulses)
+
     return iq
+
+def dup_wave(iq: NDArray[np.complex_], num_pulses: int):
+   return np.tile(iq, [num_pulses])
