@@ -1,13 +1,13 @@
-[
+ [
     {
         "id": "cw",
         "name": "Continuous Wave",
         "filter": false,
         "action": "/generate/cw",
         "fields": [
-            {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "1000"},
-            {"label": "Pulse Width (s):", "name": "pw", "value": "0.005"},
-            {"label": "Pulse Repetition Interval (s):", "name": "signal_length", "value": "1"},
+            {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "20e6"},
+            {"label": "Pulse Width (s):", "name": "pw", "value": "10e-6"},
+            {"label": "Pulse Repetition Interval (s):", "name": "signal_length", "value": "20e-6"},
             {"label": "Amplitude", "name": "amplitude", "value" : "2000"}
         ]
     },
@@ -17,12 +17,12 @@
         "filter": false,
         "action": "/generate/lfm",
         "fields": [
-            {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "1000"},
-            {"label": "Start Frequency (Hz):", "name": "fstart", "value": "10"},
-            {"label": "Stop Frequency (Hz):", "name": "fstop", "value": "100"},
-            {"label": "Number Pulses:", "name": "num_pulses", "value": "10"},
-            {"label": "Pulse Width (s):", "name": "pw", "value": "500"},
-            {"label": "Pulse Repetition Interval (s):", "name": "pri", "value": "5"},
+            {"label": "Sample Rate (Hz):", "name": "sample_rate", "value": "20e6"},
+            {"label": "Start Frequency (Hz):", "name": "fstart", "value": "-0.5e6"},
+            {"label": "Stop Frequency (Hz):", "name": "fstop", "value": "0.5e6"},
+            {"label": "Number Pulses:", "name": "num_pulses", "value": "4"},
+            {"label": "Pulse Width (s):", "name": "pw", "value": "10e-6"},
+            {"label": "Pulse Repetition Interval (s):", "name": "pri", "value": "20e-6"},
             {"label": "Amplitude", "name": "amplitude", "value" : "2000"}
         ]
     },
