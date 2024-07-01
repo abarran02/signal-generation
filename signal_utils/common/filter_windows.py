@@ -5,7 +5,7 @@ from numpy.typing import NDArray
 
 
 #-----------------------------------------------------------------------------------------------------
-def nuttall_window(N: int) -> NDArray[np.float_]:
+def nuttall_window(N: int) -> NDArray[np.float16]:
 
     w = np.zeros(N)
     a0 = 0.355768
@@ -18,7 +18,7 @@ def nuttall_window(N: int) -> NDArray[np.float_]:
     return w
 
 #-----------------------------------------------------------------------------------------------------
-def blackman_nuttall_window(N: int) -> NDArray[np.float_]:
+def blackman_nuttall_window(N: int) -> NDArray[np.float16]:
 
     w = np.zeros(N)
     a0 = 0.3635819
@@ -31,7 +31,7 @@ def blackman_nuttall_window(N: int) -> NDArray[np.float_]:
     return w
 
 #-----------------------------------------------------------------------------------------------------
-def create_fir_filter(fc: float, w: NDArray[np.float_]) -> NDArray[np.float_]:
+def create_fir_filter(fc: float, w: NDArray[np.float16]) -> NDArray[np.float16]:
 
     N = w.shape[0]
     g = np.zeros(N)
