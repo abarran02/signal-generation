@@ -43,12 +43,13 @@ def get_bpsk():
     schema = BPSKSchema()
     try:
         data = schema.load(request.args)
+        final_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
+        for __ in range(data["num_pulses"]-1):
+            single_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
+            final_pulse += single_pulse
+        #pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], True)
 
-        pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
-        
-        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], True)
-
-        return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"]) #need to fix x-axis for bpsk
+        return output_cases(final_pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"]) #need to fix x-axis for bpsk
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
