@@ -11,6 +11,7 @@ app.register_blueprint(wave_views)
 def index():
     html_template = "index.jinja"
     forms_json = "templates/forms.json"
+    print("Hello!")
 
     with open(forms_json, "r") as f:
         forms = json.load(f)

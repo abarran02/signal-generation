@@ -7,6 +7,7 @@ from numpy.typing import NDArray
 
 
 def generate_bpsk(data: NDArray[np.int_], sample_rate: int, bit_length: float) -> NDArray[np.complex_]:
+    print("called!")
 
     num_bits = data.shape[0]
     samples_per_bit = math.floor(sample_rate * bit_length)

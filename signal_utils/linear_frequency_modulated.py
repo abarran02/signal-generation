@@ -31,9 +31,3 @@ def generate_lfm(sample_rate: int, f_start: float, f_stop: float, signal_length:
 
     iq = np.exp(1j * 2.0 * np.pi * (f_start * t + (f_stop - f_start) * 0.5 * t * t / signal_length))
     return iq 
-   # with_blanks = iq.concatenate(0.0*len(iq))
-
-    #return dup_wave(with_blanks, num_pulses)
-
-def dup_wave(iq: NDArray[np.complex_], num_pulses: int):
-   return np.tile(iq, [num_pulses])

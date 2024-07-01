@@ -17,9 +17,9 @@ def get_cw():
     try:
         data = schema.load(request.args)
         pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["signal_length"])
-        pulse = get_pulse_blanks(pulse, 4, data["amplitude"])
+        pulse = get_pulse_blanks(pulse, 1, data["amplitude"], False)
 
-        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 4) #4 is temp num_pulses count
+        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 1)
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
@@ -31,7 +31,7 @@ def get_lfm():
     try:
         data = schema.load(request.args)
         pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pri"], data["num_pulses"])
-        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"])
+        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"],False)
 
         return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"], data["num_pulses"])
 
@@ -44,19 +44,22 @@ def get_bpsk():
     try:
         data = schema.load(request.args)
 
-        pri = data["bit_length"] * (2**(data["num_bits"]-1))
-        pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], pri, data["num_pulses"])
-        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"])
+        pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
+        
+        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], True)
 
-        return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"]) 
+        return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"]) #need to fix x-axis for bpsk
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
 
-def get_pulse_blanks(pulse, num_pulses, amplitude):
+def get_pulse_blanks(pulse, num_pulses, amplitude, is_bpsk):
     #returns the pulse with blanks spaces according to the number of pulses
     pulse = np.round(amplitude * pulse)
-    pulse_with_zeros = np.append(pulse, np.zeros(len(pulse)))
+    if is_bpsk == True:
+        pulse_with_zeros = np.append(pulse, np.zeros(len(pulse)))
+    else:
+        pulse_with_zeros = np.append(pulse, np.zeros(len(pulse)))
     pulse = np.tile(pulse_with_zeros, num_pulses)
 
     return pulse

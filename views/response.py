@@ -88,7 +88,7 @@ def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str
         return send_bytes_response(pulse_bytes, abbr)
 
     elif form == "png":
-        t = np.linspace(0, tstop*num_pulses, pulse.shape[0])
+        t = np.linspace(0, tstop, pulse.shape[0])
         return send_plot_image(pulse, t, abbr, axes)
 
     elif form == "graph":

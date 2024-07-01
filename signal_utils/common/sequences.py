@@ -56,7 +56,9 @@ def random_tap_sequence(num_bits: int) -> list[int]:
 def generate_fbpsk(fc: float, num_taps: int, num_bits: int, sample_rate: int, bit_length: float, sequence_type: str, pri: float, num_pulses: int) -> NDArray[np.complex_]:
     if sequence_type == 'mls':
         taps = random_tap_sequence(num_bits)
+        print( taps)
         seq = maximal_length_sequence(num_bits, np.array(taps))
+        print(seq)
     else:
         seq = barker_code(num_bits)
 
