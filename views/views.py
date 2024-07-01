@@ -17,7 +17,7 @@ def get_cw():
     try:
         data = schema.load(request.args)
         pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["signal_length"])
-        pulse = get_pulse_blanks(pulse, 1, data["amplitude"], False)
+        pulse = get_pulse_blanks(pulse, 1, data["amplitude"], 1, False)
 
         return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 1)
 
@@ -31,7 +31,7 @@ def get_lfm():
     try:
         data = schema.load(request.args)
         pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pri"], data["num_pulses"])
-        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"],False)
+        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], data["pri"], False)
 
         return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"], data["num_pulses"])
 
@@ -44,13 +44,10 @@ def get_bpsk():
     try:
         data = schema.load(request.args)
         final_pulse = np.empty(0)
-        i = 0
         for __ in range(data["num_pulses"]):
-            print("num_pulses count " + str(i))
             single_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
             single_pulse = get_pulse_blanks(single_pulse, data["num_pulses"], data["amplitude"], data["pulse_reps"], True)
             final_pulse = np.append(final_pulse,single_pulse)
-            i+=1
         return output_cases(final_pulse, data["form"], data["sample_rate"], "bpsk", data["axes"], data["num_pulses"]) #need to fix x-axis for bpsk
         #original using bit_length
         #return output_cases(final_pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"]) #need to fix x-axis for bpsk
@@ -67,12 +64,9 @@ def get_pulse_blanks(pulse, num_pulses, amplitude, pri, is_bpsk):
         buffer_samples = max(0, samples_per_pri-samples_per_pulse)
         space_leftover = abs(pri-len(pulse))
         num_buff_samples =  np.tile(buffer_samples, space_leftover)
-        print("buffer_samples")
-        print(buffer_samples)
         pulse = np.append(pulse, num_buff_samples)
-        
     else:
         pulse = np.append(pulse, np.zeros(len(pulse)))
-    #pulse = np.tile(pulse, num_pulses)
+        pulse = np.tile(pulse, num_pulses)
 
     return pulse
