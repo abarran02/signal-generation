@@ -43,24 +43,36 @@ def get_bpsk():
     schema = BPSKSchema()
     try:
         data = schema.load(request.args)
-        final_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
-        for __ in range(data["num_pulses"]-1):
+        final_pulse = np.empty(0)
+        i = 0
+        for __ in range(data["num_pulses"]):
+            print("num_pulses count " + str(i))
             single_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
-            final_pulse += single_pulse
-        #pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], True)
-
-        return output_cases(final_pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"]) #need to fix x-axis for bpsk
+            single_pulse = get_pulse_blanks(single_pulse, data["num_pulses"], data["amplitude"], data["pulse_reps"], True)
+            final_pulse = np.append(final_pulse,single_pulse)
+            i+=1
+        return output_cases(final_pulse, data["form"], data["sample_rate"], "bpsk", data["axes"], data["num_pulses"]) #need to fix x-axis for bpsk
+        #original using bit_length
+        #return output_cases(final_pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"]) #need to fix x-axis for bpsk
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
 
-def get_pulse_blanks(pulse, num_pulses, amplitude, is_bpsk):
+def get_pulse_blanks(pulse, num_pulses, amplitude, pri, is_bpsk):
     #returns the pulse with blanks spaces according to the number of pulses
     pulse = np.round(amplitude * pulse)
     if is_bpsk == True:
-        pulse_with_zeros = np.append(pulse, np.zeros(len(pulse)))
+        samples_per_pulse = len(pulse)
+        samples_per_pri = (pri*num_pulses)
+        buffer_samples = max(0, samples_per_pri-samples_per_pulse)
+        space_leftover = abs(pri-len(pulse))
+        num_buff_samples =  np.tile(buffer_samples, space_leftover)
+        print("buffer_samples")
+        print(buffer_samples)
+        pulse = np.append(pulse, num_buff_samples)
+        
     else:
-        pulse_with_zeros = np.append(pulse, np.zeros(len(pulse)))
-    pulse = np.tile(pulse_with_zeros, num_pulses)
+        pulse = np.append(pulse, np.zeros(len(pulse)))
+    #pulse = np.tile(pulse, num_pulses)
 
     return pulse
