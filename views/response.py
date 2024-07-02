@@ -89,7 +89,6 @@ def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str
 
     elif form == "png":
         if is_bpsk:
-        #(0:numel(iq)-1) * (1/sample_rate);
             t = np.linspace((len(pulse)-1)*(1/tstop), tstop*num_pulses, pulse.shape[0])
         else:
             t = np.linspace(0, tstop*num_pulses, pulse.shape[0])
