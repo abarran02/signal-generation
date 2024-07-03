@@ -10,6 +10,8 @@ from .schema import *
 
 wave_views = Blueprint("wave_views", __name__, url_prefix="/generate")
 
+# generates the designated pulse where each pulse repetition interval (pri) = pulse width + zeros for the remaining space
+# returns the pulse to be displayed by output_cases
 @wave_views.route("/cw", methods=["GET"])
 def get_cw():
     schema = CWSchema()
@@ -17,9 +19,9 @@ def get_cw():
     try:
         data = schema.load(request.args)
         pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["signal_length"])
-        pulse = get_pulse_blanks(pulse, 1, data["amplitude"], False)
+        pulse = get_pulse_blanks(pulse, 1, data["amplitude"], 1, 1, False)
 
-        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 1)
+        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 1, False)
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
@@ -31,36 +33,39 @@ def get_lfm():
     try:
         data = schema.load(request.args)
         pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pri"], data["num_pulses"])
-        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"],False)
+        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], data["pri"], 1, False)
 
-        return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"], data["num_pulses"])
+        return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"], data["num_pulses"],False)
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
 
+#For each pulse, create a filtered bpsk with a randomly generated sequence
 @wave_views.route("/bpsk", methods=["GET"])
 def get_bpsk():
     schema = BPSKSchema()
     try:
         data = schema.load(request.args)
-        final_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
-        for __ in range(data["num_pulses"]-1):
+        final_pulse = np.empty(0)
+        for __ in range(data["num_pulses"]):
             single_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
-            final_pulse += single_pulse
-        #pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], True)
-
-        return output_cases(final_pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"]) #need to fix x-axis for bpsk
+            single_pulse = get_pulse_blanks(single_pulse, data["num_pulses"], data["amplitude"], data["pulse_reps"], data["sample_rate"], True)
+            final_pulse = np.append(final_pulse,single_pulse)
+        return output_cases(final_pulse, data["form"], data["sample_rate"], "bpsk", data["axes"], data["num_pulses"], True) 
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
 
-def get_pulse_blanks(pulse, num_pulses, amplitude, is_bpsk):
-    #returns the pulse with blanks spaces according to the number of pulses
+#Returns the pulse with blanks spaces according
+def get_pulse_blanks(pulse, num_pulses, amplitude, pri, sample_rate, is_bpsk):
     pulse = np.round(amplitude * pulse)
     if is_bpsk == True:
-        pulse_with_zeros = np.append(pulse, np.zeros(len(pulse)))
+        samples_per_pulse = len(pulse) #get the length of a filtered pulse
+        samples_per_pri = pri*sample_rate 
+        buffer_samples = max(0, samples_per_pri-samples_per_pulse)
+        pulse = np.append(pulse, buffer_samples) #add the zeros onto the pulse
     else:
-        pulse_with_zeros = np.append(pulse, np.zeros(len(pulse)))
-    pulse = np.tile(pulse_with_zeros, num_pulses)
+        pulse = np.append(pulse, np.zeros(len(pulse))) 
+        pulse = np.tile(pulse, num_pulses)
 
     return pulse
