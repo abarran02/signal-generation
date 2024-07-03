@@ -68,7 +68,9 @@ def get_pulse_blanks(pulse, num_pulses, amplitude, pri, sample_rate, pulse_width
         samples_per_pri = round(pri*sample_rate)
         buffer_samples = np.tile(0, max(0, samples_per_pri-samples_per_pulse)) #append this many 0s to get pri = pw + len(0s)
     elif wave_type == "lfm":
-        samples_per_pulse = len(pulse)
+        samples_per_pulse = round(pulse_width*sample_rate)
+        print("samples_per_pulse")
+        print(samples_per_pulse)
         samples_per_pri = round(pri*sample_rate)
         buffer_samples = np.tile(0, max(0, samples_per_pri-samples_per_pulse))
     elif wave_type == "bpsk":
