@@ -22,16 +22,15 @@ def read_input_params(filename: Path) -> tuple[int, float, int, list[int], int, 
 
     return input_params['sample_rate'], input_params['bit_length'], input_params['num_bits'], input_params['taps'], input_params['amplitude'], input_params['pri'], input_params['num_pulses']
 
-def generate_filtered_pulse(fc: float, num_taps: int, seq: NDArray[np.int_], sample_rate: int, bit_length: float, pri: float, num_pulses: int) -> NDArray[np.complex64]:
-    samples_per_pulse = int(sample_rate * pri)
+def generate_filtered_pulse(fc: float, num_taps: int, seq: NDArray[np.int_], sample_rate: int, bit_length: float, pri: float, num_pulses: int) -> NDArray[np.complex_]:
 
     pulse = generate_bpsk(seq, sample_rate, bit_length)
 
-    pulse_buffer = int(samples_per_pulse - pulse.shape[0])
-    if (pulse_buffer < 0):
-        pulse_buffer = 0
+    #pulse_buffer = int(samples_per_pulse - pulse.shape[0])
+    #if (pulse_buffer < 0):
+    #    pulse_buffer = 0
 
-    pulse = np.append(pulse, np.zeros([pulse_buffer]))
+    #pulse = np.append(pulse, np.zeros([pulse_buffer]))
 
     w = blackman_nuttall_window(num_taps)
     lpf = create_fir_filter(fc, w)
