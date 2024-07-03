@@ -17,9 +17,9 @@ def get_cw():
     try:
         data = schema.load(request.args)
         pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["signal_length"])
-        pulse = np.round(data["amplitude"] * pulse)
+        pulse = get_pulse_blanks(pulse, 1, data["amplitude"], False)
 
-        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"])
+        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 1)
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
@@ -30,10 +30,10 @@ def get_lfm():
 
     try:
         data = schema.load(request.args)
-        pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pri"])
-        pulse = np.round(data["amplitude"] * pulse)
+        pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pri"], data["num_pulses"])
+        pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"],False)
 
-        return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"])
+        return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"], data["num_pulses"])
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
@@ -43,12 +43,24 @@ def get_bpsk():
     schema = BPSKSchema()
     try:
         data = schema.load(request.args)
+        final_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
+        for __ in range(data["num_pulses"]-1):
+            single_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
+            final_pulse += single_pulse
+        #pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], True)
 
-        pri = data["bit_length"] * (2**(data["num_bits"]-1))
-        pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], pri, data["num_pulses"])
-        pulse = np.round(data["amplitude"] * pulse)
-
-        return output_cases(pulse, data["form"], data["bit_length"], "bpsk", data["axes"])
+        return output_cases(final_pulse, data["form"], data["bit_length"], "bpsk", data["axes"], data["num_pulses"]) #need to fix x-axis for bpsk
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
+
+def get_pulse_blanks(pulse, num_pulses, amplitude, is_bpsk):
+    #returns the pulse with blanks spaces according to the number of pulses
+    pulse = np.round(amplitude * pulse)
+    if is_bpsk == True:
+        pulse_with_zeros = np.append(pulse, np.zeros(len(pulse)))
+    else:
+        pulse_with_zeros = np.append(pulse, np.zeros(len(pulse)))
+    pulse = np.tile(pulse_with_zeros, num_pulses)
+
+    return pulse

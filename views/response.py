@@ -44,14 +44,14 @@ def send_plot_image(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: 
     ax = fig.subplots()
 
     if axes.lower() == "iqvt":
-        ax.plot(t, np.real(pulse), label="In-phase (I)")
-        ax.plot(t, np.imag(pulse), label="Quadrature (Q)", linestyle="--")
+        ax.plot(t, np.real(pulse), label="In-phase (I)", linewidth = '0.75')
+        ax.plot(t, np.imag(pulse), label="Quadrature (Q)", linestyle="--", linewidth= "0.75")
         ax.set_title(f"{abbr.upper()} Signal in Time Domain")
         ax.set_xlabel("Time (s)")
         ax.set_ylabel("Amplitude")
         ax.legend()
     elif axes.lower() == "ivq":
-        ax.scatter(np.real(pulse), np.imag(pulse) , s=15)
+        ax.scatter(np.real(pulse), np.imag(pulse) , s=10)
         ax.set_title(f"{abbr.upper()} In-phase vs Quadrature")
         ax.set_xlabel("In-phase (I)")
         ax.set_ylabel("Quadrature (Q)")
@@ -82,19 +82,19 @@ def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16],
 
     return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 
-def output_cases(pulse: NDArray[np.complex64], form: str, tstop: float, abbr: str, axes: str) -> Response:
+def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str, axes: str, num_pulses: int) -> Response:
     if form == "sc16":
         pulse_bytes = get_iq_bytes(pulse)
         return send_bytes_response(pulse_bytes, abbr)
 
     elif form == "png":
-        t = np.linspace(0, tstop, pulse.shape[0])
+        t = np.linspace(0, tstop*num_pulses, pulse.shape[0])
         return send_plot_image(pulse, t, abbr, axes)
 
     elif form == "graph":
-        t = np.linspace(0, tstop, pulse.shape[0])
+        t = np.linspace(0, tstop*num_pulses, pulse.shape[0])
         return send_interactive_graph(pulse, t, abbr)
 
     elif form == "threeDim":
-        t = np.linspace(0, tstop, pulse.shape[0])
+        t = np.linspace(0, tstop*num_pulses, pulse.shape[0])
         return create_three_dim_graph(pulse, t, abbr)

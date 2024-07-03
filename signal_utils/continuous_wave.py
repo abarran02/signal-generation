@@ -28,5 +28,5 @@ def generate_cw(sample_rate: int, signal_length: float) -> NDArray[np.complex64]
 
     # add the complex component
     iq = iq + 1j * np.zeros(iq.shape[0])
-
+    
     return iq

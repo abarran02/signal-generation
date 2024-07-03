@@ -20,7 +20,7 @@ def plot_radar_pulse(filename: Path) -> tuple[NDArray[np.complex64], NDArray[np.
     return iq_data, t
 
 def plot_cw(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.float_]]:
-    sample_rate, signal_length = su.continuous_wave.read_input_params(filename)
+    sample_rate, signal_length, num_pulses = su.continuous_wave.read_input_params(filename)
     samples_per_pulse = int(sample_rate * signal_length)
     pulse = su.continuous_wave.generate_cw(sample_rate, signal_length) #used to be iq_data
     pulse_buffer = int(samples_per_pulse - pulse.shape[0])
@@ -28,17 +28,21 @@ def plot_cw(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.float_]]:
         pulse_buffer = 0
     iq_data = np.append(pulse, np.np.zeros([pulse_buffer]))
 
+
     t = np.linspace(0, signal_length, iq_data.shape[0])
     return iq_data, t
 
 def plot_lfm(filename: Path) -> tuple[NDArray[np.complex_], NDArray[np.float_]]:
-    sample_rate, fstart, fstop, pri = su.linear_frequency_modulated.read_input_params(filename)
+    sample_rate, fstart, fstop, pri, num_pulses = su.linear_frequency_modulated.read_input_params(filename)
     samples_per_pulse = int(sample_rate*pri)
     pulse_buffer = int(samples_per_pulse - pulse.shape[0])
-    pulse = su.linear_frequency_modulated.generate_lfm(sample_rate, fstart, fstop, pri)
+    pulse = su.linear_frequency_modulated.generate_lfm(sample_rate, fstart, fstop, pri, num_pulses)
     if (pulse_buffer < 0):
         pulse_buffer = 0
-    iq_data = np.append(pulse, np.np.zeros([pulse_buffer])) 
+    iq_data = np.append(pulse, np.zeros([pulse_buffer])) 
+
+    #add arg for num pulses, use tile on iq pulse_seq = np.tile(pulse_filt, [num_pulses])
+    #create tiling func
 
     t = np.linspace(0, pri, iq_data.shape[0])
     return iq_data, t
