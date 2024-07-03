@@ -1,4 +1,42 @@
-# API Reference
+# SDR Signal Generation Utility
+
+## Instructions
+
+### Creating and Activating a Virtual Environment
+
+Using a virtual environment is highly recommended.
+
+1. **Create a Virtual Environment:**
+    ```sh
+    python -m venv .venv
+    ```
+2. **Activate the Virtual Environment**
+
+    Windows:
+    ```sh
+    .venv\Scripts\activate
+    ```
+
+    macOS/Linux:
+    ```sh
+    source .venv/bin/activate
+    ```
+
+3. **Install dependencies**
+
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+## Running the Application
+
+To run the Flask web app, run:
+```sh
+python app.py
+```
+The application will be available on the default port 5000.
+
+## API Reference
 
 Backend interface to generate radar waveforms with variable parameters and output formats.
 

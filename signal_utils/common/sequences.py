@@ -53,7 +53,7 @@ def random_tap_sequence(num_bits: int) -> list[int]:
     # inefficient subtraction on-the-fly but we can fix the data later
     return [x-1 for x in random.choice(possible_seqs)] #1-indexing
 
-def generate_fbpsk(fc: float, num_taps: int, num_bits: int, sample_rate: int, bit_length: float, sequence_type: str, pri: float, num_pulses: int) -> NDArray[np.complex_]:
+def generate_fbpsk(fc: float, num_taps: int, num_bits: int, sample_rate: int, bit_length: float, sequence_type: str, pri: float, num_pulses: int) -> NDArray[np.complex64]:
     if sequence_type == 'mls':
         taps = random_tap_sequence(num_bits)
         print( taps)
