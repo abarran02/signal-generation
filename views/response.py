@@ -27,7 +27,7 @@ def send_bytes_response(pulse_bytes: bytes, prefix: str):
         download_name=f"{prefix}_{formatted_time}.sc16"
     )
 
-def send_interactive_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: str):
+def send_interactive_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str):
     df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
     fig = px.line(df,
         x=t,
@@ -39,7 +39,7 @@ def send_interactive_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], a
 
     return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 
-def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: str, axes: str):
+def send_plot_image(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str, axes: str):
     fig = Figure()
     ax = fig.subplots()
 
@@ -67,7 +67,7 @@ def send_plot_image(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: st
         mimetype="image/png"
     )
 
-def create_three_dim_graph(pulse: NDArray[np.complex_], t: NDArray[np.float_], abbr: str):
+def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str):
     df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
     fig = px.scatter_3d(df,
                         x = df.loc[:, "real"],
