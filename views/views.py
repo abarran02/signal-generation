@@ -18,7 +18,7 @@ def get_cw():
 
     try:
         data = schema.load(request.args)
-        pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["signal_length"])
+        pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["pw"])
         pulse = get_pulse_blanks(pulse, 1, data["amplitude"], data["signal_length"], data["sample_rate"], data["pw"], "cw")
 
         return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 1, False)
@@ -32,10 +32,9 @@ def get_lfm():
     i = 0
     try:
         data = schema.load(request.args)
-        pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pri"], data["num_pulses"])
+        pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pw"], data["num_pulses"])
         pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], data["pri"], data["sample_rate"],  data["pw"], "lfm")
         pulse = np.tile(pulse, data["num_pulses"])
-
 
         return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"], data["num_pulses"],False)
         
@@ -55,7 +54,7 @@ def get_bpsk():
             single_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"],data["num_bits"], data["sample_rate"], data["bit_length"], data["sequence_type"], data["pulse_reps"], data["num_pulses"])
             single_pulse = get_pulse_blanks(single_pulse, data["num_pulses"], data["amplitude"], data["pulse_reps"], data["sample_rate"], 1, "bpsk")
             final_pulse = np.append(final_pulse,single_pulse)
-        return output_cases(final_pulse, data["form"], data["sample_rate"], "bpsk", data["axes"], data["num_pulses"], True) 
+        return output_cases(final_pulse, data["form"], data["pulse_reps"], "bpsk", data["axes"], data["num_pulses"], True) 
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
@@ -66,17 +65,15 @@ def get_pulse_blanks(pulse, num_pulses, amplitude, pri, sample_rate, pulse_width
     if wave_type == "cw":
         samples_per_pulse = round(pulse_width * sample_rate)
         samples_per_pri = round(pri*sample_rate)
-        buffer_samples = np.tile(0, max(0, samples_per_pri-samples_per_pulse)) #append this many 0s to get pri = pw + len(0s)
+        buffer_samples = np.zeros(max(0, int(samples_per_pri-samples_per_pulse))) #append this many 0s to get pri = pw + len(0s)
     elif wave_type == "lfm":
         samples_per_pulse = round(pulse_width*sample_rate)
-        print("samples_per_pulse")
-        print(samples_per_pulse)
         samples_per_pri = round(pri*sample_rate)
-        buffer_samples = np.tile(0, max(0, samples_per_pri-samples_per_pulse))
+        buffer_samples = np.zeros(max(0, int(samples_per_pri-samples_per_pulse)))
     elif wave_type == "bpsk":
         samples_per_pulse = len(pulse) #get the length of a filtered pulse
         samples_per_pri = pri*sample_rate 
-        buffer_samples = max(0, samples_per_pri-samples_per_pulse)
+        buffer_samples = np.zeros(max(0, int(samples_per_pri-samples_per_pulse)))
     pulse = np.append(pulse, buffer_samples) #add the zeros onto the pulse
 
     return pulse
