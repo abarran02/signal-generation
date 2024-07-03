@@ -37,15 +37,15 @@ class WaveGeneric(Schema):
     amplitude = ScientificNotation(value_type="int", required=True)
 
 class CWSchema(WaveGeneric):
-    signal_length = ScientificNotation(required=True)
-    pw = ScientificNotation(required=True)
+    signal_length = ScientificNotation(value_type="float", required=True)
+    pw = ScientificNotation(value_type="float", required=True)
 
 class LFMSchema(WaveGeneric):
     fstart = ScientificNotation(required=True)
     fstop = ScientificNotation(required=True)
     num_pulses = ScientificNotation(value_type="int", required=True)
-    pw = ScientificNotation(required=True)
-    pri = ScientificNotation(required=True)
+    pw = ScientificNotation(value_type="float", required=True)
+    pri = ScientificNotation(value_type="float", required=True)
 
 class BPSKSchema(WaveGeneric):
     bit_length = ScientificNotation(required=True)
