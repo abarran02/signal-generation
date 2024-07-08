@@ -47,7 +47,6 @@ def send_plot_image(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: 
         ax.plot(t, np.real(pulse), label="In-phase (I)", linewidth = '0.75')
         ax.plot(t, np.imag(pulse), label="Quadrature (Q)", linestyle="--", linewidth= "0.75")
         ax.set_title(f"{abbr.upper()} Signal in Time Domain")
-        ax.ticklabel_format(axis='x', scilimits=[-3, 3])
         ax.set_xlabel("Time (s)")
         ax.set_ylabel("Amplitude")
         ax.legend()
