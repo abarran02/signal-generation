@@ -10,7 +10,9 @@ from matplotlib.figure import Figure
 from numpy.typing import NDArray
 from plotly_resampler import register_plotly_resampler
 
+
 from signal_utils.common.binary_file_ops import get_iq_bytes
+
 
 register_plotly_resampler(mode='auto')  # improves plotly scalability
 matplotlib.use("agg")  # limit matplotlib to png backend
@@ -47,6 +49,7 @@ def send_plot_image(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: 
         ax.plot(t, np.real(pulse), label="In-phase (I)", linewidth = '0.75')
         ax.plot(t, np.imag(pulse), label="Quadrature (Q)", linestyle="--", linewidth= "0.75")
         ax.set_title(f"{abbr.upper()} Signal in Time Domain")
+        ax.ticklabel_format(axis='x', scilimits=[-3, 3])
         ax.set_xlabel("Time (s)")
         ax.set_ylabel("Amplitude")
         ax.legend()
@@ -82,7 +85,7 @@ def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16],
 
     return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 
-def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str, axes: str, num_pulses: int, is_bpsk: bool) -> Response:
+def output_cases(pulse: NDArray[np.complex64], form: str, tstop: float, abbr: str, axes: str, num_pulses: int, is_bpsk: bool) -> Response:
     if form == "sc16":
         pulse_bytes = get_iq_bytes(pulse)
         return send_bytes_response(pulse_bytes, abbr)
