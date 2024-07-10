@@ -20,9 +20,8 @@ def index():
 
     return render_template(html_template, forms=forms)
 
-#dash tests
+#Dash app (accessible by adding /dash/ to end of generated url)
 app = Dash(server=server, external_stylesheets=[dbc.themes.SLATE], prevent_initial_callbacks=True, suppress_callback_exceptions=True)
-
 
 #Create rest of the form based on wave type selected 
 @app.callback(
@@ -35,17 +34,18 @@ def format_inputs_list(select_type_options):
 #crete graphs when button is pressed
 @app.callback(
     Output(graphs_display, component_property='figure'),
-    Input("interactive_graph", component_property='value'), #form option should probably be something else
+    Input("show_wave", component_property='n_clicks'), #form option should probably be something else
    # State()
 )
 def forms_redirection():
     #depending on button pressed, would want a dif graph output
-    return 
+    print("I was clicked!")
 
 
 
 #form and graphs laid out together
 app.layout = dbc.Container([
+    html.Br(),
     html.Center(page_title),
     html.Br(),
     dbc.Row([
@@ -54,7 +54,7 @@ app.layout = dbc.Container([
                 form_options,
                 html.Br(),
                 html.Center([
-                    dbc.Button("Show Waveform", color="info", id="showWave", style={'marginRight': '15px'}),
+                    dbc.Button("Show Waveform", color="info", id="show_wave", style={'marginRight': '15px'}),
                     dbc.Button("Download .sc16", color ="info", id="download")
                     ])
             ], style={'marginTop': '1%'}),

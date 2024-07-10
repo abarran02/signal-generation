@@ -37,17 +37,18 @@ def generate_inputs_list(selected_type):
 
 page_title = dcc.Markdown(children = '# Waveform Visualization')
 graphs_display = dcc.Graph(figure={}, id="interactive_graph") #nothing in graph in the beginning
-three_dim_graph = dcc.Graph(figure={}, id="three_dim")
+three_dim_graph = dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})
 
 select_type_options = dcc.RadioItems(
-    create_radio_list(), value='Continuous Wave', style={'font-size': '18px', 'margin-left': '5'}
+    create_radio_list(), value='Continuous Wave', style={'font-size': '18px', 'margin-left': '10px', 'display': 'flex','justifyContent':'center', 'textAlign': 'center'}
 )
 
-#layout of the form
+#layout of the form (left component)
 form_options = html.Div([
-        dcc.Markdown(children= '### Select Wave Type:'),
+        html.Center(dcc.Markdown(children= '### Select Wave Type')),
+        html.Br(),
         select_type_options,
         html.Br(),
-        dcc.Markdown(children="### Inputs:"),
+        html.Center(dcc.Markdown(children="### Inputs")),
         dbc.Container(id="gen_inputs", children=[]),
     ], style={'color': '#E9E8F2','backgroundColor':'#59585F', 'padding': '1.5rem 1rem', 'borderRadius': '10px'})
