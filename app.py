@@ -24,24 +24,14 @@ def index():
 app = Dash(server=server, external_stylesheets=[dbc.themes.SLATE], prevent_initial_callbacks=True, suppress_callback_exceptions=True)
 
 
+
 @app.callback(
-    Output("gen_inputs", "selected_type"),
+    Output("gen_inputs", component_property='children'),
     Input(select_type_options, component_property='value')
 )
-def generate_inputs(selected_type):
-    inp_lst = []
-    for f in forms:
-        if (f["name"] == selected_type):
-            inputs = f #retrieve type from json file
-    inputs = inputs['fields']
-    for inp in inputs:
-        inp_lst.append(inp["label"])
-        inp_lst.append(inp["value"])
-        print(inp_lst)
-    return inp_lst
+def format_inputs_list(select_type_options):
+    return dbc.Col(generate_inputs_list(select_type_options))
 
-
-inputs = generate_inputs("Continuous Wave")
 
 #layout of the form
 form_options = html.Div([
@@ -49,7 +39,7 @@ form_options = html.Div([
         select_type_options,
         html.Br(),
         dcc.Markdown(children="### Inputs:"),
-        html.Div(id="gen_inputs", children=[]),
+        dbc.Container(id="gen_inputs", children=[]),
         #input the buttons heres
     ])
 '''

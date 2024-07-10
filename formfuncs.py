@@ -15,6 +15,22 @@ def create_radio_list():
         radio_options.append(f['name'])
     return radio_options
 
+def generate_inputs_list(selected_type):
+    inp_lst = []
+    for f in forms:
+        if (f["name"] == selected_type):
+            inputs = f #retrieve type from json file
+            inputs = inputs['fields']
+    for inp in inputs:
+        '''
+        if(inp["label"]!= "Sequencing Type:"):
+            inp_options = inp["label"]
+            inp_lst.append(dcc.Dropdown(inp_options["label"] for i in inp_options))
+        else:
+        '''
+        inp_lst.append(html.Label(inp["label"]))
+        inp_lst.append(dbc.Input(value=inp["value"], id=inp["name"]))
+    return inp_lst
 
 #variables
 
@@ -22,14 +38,6 @@ page_title = dcc.Markdown(children = '# Waveform Visualization')
 graphs_display = dcc.Graph(figure={}) #nothing in graph in the beginning
 
 select_type_options = dcc.RadioItems(
-    create_radio_list(), value='Continuous Wave'
+    create_radio_list(), value='Continuous Wave', style={'font-size': '18px', 'margin-left': '5'}
 )
 
-
-#layout of the form
-form_options = html.Div([
-        dcc.Markdown(children= '### Select Wave Type:'),
-        select_type_options,
-        html.Br(),
-        dcc.Markdown(children="### Inputs:")
-    ])
