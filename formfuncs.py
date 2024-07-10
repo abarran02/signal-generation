@@ -9,6 +9,7 @@ name = "hey"
 with open(forms_json, "r") as f: 
     forms = json.load(f)
 
+#take forms.json parameters and format it as a list to be created as a Dash Component
 def create_radio_list():
     radio_options = []
     for f in forms:
@@ -32,12 +33,21 @@ def generate_inputs_list(selected_type):
         inp_lst.append(dbc.Input(value=inp["value"], id=inp["name"]))
     return inp_lst
 
-#variables
+#variable assignments
 
 page_title = dcc.Markdown(children = '# Waveform Visualization')
-graphs_display = dcc.Graph(figure={}) #nothing in graph in the beginning
+graphs_display = dcc.Graph(figure={}, id="interactive_graph") #nothing in graph in the beginning
+three_dim_graph = dcc.Graph(figure={}, id="three_dim")
 
 select_type_options = dcc.RadioItems(
     create_radio_list(), value='Continuous Wave', style={'font-size': '18px', 'margin-left': '5'}
 )
 
+#layout of the form
+form_options = html.Div([
+        dcc.Markdown(children= '### Select Wave Type:'),
+        select_type_options,
+        html.Br(),
+        dcc.Markdown(children="### Inputs:"),
+        dbc.Container(id="gen_inputs", children=[]),
+    ], style={'color': '#E9E8F2','backgroundColor':'#59585F', 'padding': '1.5rem 1rem', 'borderRadius': '10px'})

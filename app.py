@@ -1,6 +1,6 @@
 import json
 
-from dash import Dash, html, dcc, Output, Input #gives interactivity
+from dash import Dash, html, dcc, Output, Input, State #gives interactivity
 import dash_bootstrap_components as dbc
 from flask import Flask, render_template
 from formfuncs import *
@@ -24,7 +24,7 @@ def index():
 app = Dash(server=server, external_stylesheets=[dbc.themes.SLATE], prevent_initial_callbacks=True, suppress_callback_exceptions=True)
 
 
-
+#Create rest of the form based on wave type selected 
 @app.callback(
     Output("gen_inputs", component_property='children'),
     Input(select_type_options, component_property='value')
@@ -32,26 +32,16 @@ app = Dash(server=server, external_stylesheets=[dbc.themes.SLATE], prevent_initi
 def format_inputs_list(select_type_options):
     return dbc.Col(generate_inputs_list(select_type_options))
 
-
-#layout of the form
-form_options = html.Div([
-        dcc.Markdown(children= '### Select Wave Type:'),
-        select_type_options,
-        html.Br(),
-        dcc.Markdown(children="### Inputs:"),
-        dbc.Container(id="gen_inputs", children=[]),
-        #input the buttons heres
-    ])
-'''
+#crete graphs when button is pressed
 @app.callback(
     Output(graphs_display, component_property='figure'),
-    Input(form_options, component_property='value') #form option should probably be something else
+    Input("interactive_graph", component_property='value'), #form option should probably be something else
+   # State()
 )
 def forms_redirection():
     #depending on button pressed, would want a dif graph output
-    print('hey')
+    return 
 
-'''
 
 
 #form and graphs laid out together
@@ -59,9 +49,23 @@ app.layout = dbc.Container([
     html.Center(page_title),
     html.Br(),
     dbc.Row([
-        dbc.Col([form_options]),
-        dbc.Col(html.Div(graphs_display)),
-    ])
+        dbc.Col([
+                html.Br(),
+                form_options,
+                html.Br(),
+                html.Center([
+                    dbc.Button("Show Waveform", color="info", id="showWave", style={'marginRight': '15px'}),
+                    dbc.Button("Download .sc16", color ="info", id="download")
+                    ])
+            ], style={'marginTop': '1%'}),
+        dbc.Col([
+                html.Center(dcc.Markdown(children="##### Interactive Plot:")),
+                html.Div(graphs_display),
+                html.Br(),
+                html.Center(dcc.Markdown(children="##### 3-Dimensional Representation:")),
+                html.Div(three_dim_graph)]),
+    ]),
+
 ])
 
 if __name__ == "__main__":
