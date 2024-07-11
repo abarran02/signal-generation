@@ -22,6 +22,9 @@ def index():
 
 #Dash app (accessible by adding /dash/ to end of generated url)
 app = Dash(server=server, external_stylesheets=[dbc.themes.SLATE], prevent_initial_callbacks=True, suppress_callback_exceptions=True)
+curr_option = "Continuous Wave"
+inp_list = []
+some_words = ""
 
 #Create rest of the form based on wave type selected 
 @app.callback(
@@ -29,17 +32,23 @@ app = Dash(server=server, external_stylesheets=[dbc.themes.SLATE], prevent_initi
     Input(select_type_options, component_property='value')
 )
 def format_inputs_list(select_type_options):
-    return dbc.Col(generate_inputs_list(select_type_options))
+    curr_option = select_type_options
+    inp_list = generate_inputs_list(curr_option)
+    return dbc.Col(inp_list)
 
 #crete graphs when button is pressed
+'''
 @app.callback(
-    Output(graphs_display, component_property='figure'),
+    #Output(graphs_display, component_property='figure'),
+    Output(some_words , component_id="testDrive")
     Input("show_wave", component_property='n_clicks'), #form option should probably be something else
-   # State()
+    #State[(id for i in inp_list)]
 )
 def forms_redirection():
     #depending on button pressed, would want a dif graph output
-    print("I was clicked!")
+    #if curr_option == "Continuous Wave": 
+
+'''
 
 
 
@@ -61,6 +70,7 @@ app.layout = dbc.Container([
         dbc.Col([
                 html.Center(dcc.Markdown(children="##### Interactive Plot:")),
                 html.Div(graphs_display),
+                html.Div(html.P(some_words), id="testDrive"),
                 html.Br(),
                 html.Center(dcc.Markdown(children="##### 3-Dimensional Representation:")),
                 html.Div(three_dim_graph)]),

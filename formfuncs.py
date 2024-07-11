@@ -1,9 +1,11 @@
 import json
 from dash import Dash, html, dcc, Output, Input #gives interactivity
+from views import * 
 import dash_bootstrap_components as dbc
 
+from views.views import get_cw
+
 forms_json = "templates/forms.json"
-name = "hey"
 
 #reading json file
 with open(forms_json, "r") as f: 
@@ -50,5 +52,5 @@ form_options = html.Div([
         select_type_options,
         html.Br(),
         html.Center(dcc.Markdown(children="### Inputs")),
-        dbc.Container(id="gen_inputs", children=[]),
+        dbc.Container(id="gen_inputs", children=[dbc.Col(generate_inputs_list("Continuous Wave"))]), #children is default value
     ], style={'color': '#E9E8F2','backgroundColor':'#59585F', 'padding': '1.5rem 1rem', 'borderRadius': '10px'})

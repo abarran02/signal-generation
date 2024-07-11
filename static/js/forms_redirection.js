@@ -62,6 +62,7 @@ function redirectInteractive() {
   const url = new URL(form.action);
   const params = new URLSearchParams(new FormData(form));
   params.set('form', 'graph');
+  
   window.location.href = `${url.pathname}?${params.toString()}`;
 }
 
