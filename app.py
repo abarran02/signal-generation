@@ -22,9 +22,6 @@ def index():
 
 #Dash app (accessible by adding /dash/ to end of generated url)
 app = Dash(server=server, external_stylesheets=[dbc.themes.SLATE], prevent_initial_callbacks=True, suppress_callback_exceptions=True)
-curr_option = "Continuous Wave"
-inp_list = []
-some_words = ""
 
 #Create rest of the form based on wave type selected 
 @app.callback(
@@ -33,22 +30,26 @@ some_words = ""
 )
 def format_inputs_list(select_type_options):
     curr_option = select_type_options
-    inp_list = generate_inputs_list(curr_option)
-    return dbc.Col(inp_list)
+    return dbc.Col(generate_inputs_list(curr_option))
 
 #crete graphs when button is pressed
-'''
+
 @app.callback(
     #Output(graphs_display, component_property='figure'),
-    Output(some_words , component_id="testDrive")
-    Input("show_wave", component_property='n_clicks'), #form option should probably be something else
+    Output("show_selected" , component_property = "children"),
+    State(select_type_options, component_property='value'),
+    Input("show_wave", component_property='n_clicks'), 
+    State("gen_inputs", component_property='children')
     #State[(id for i in inp_list)]
 )
-def forms_redirection():
+def forms_redirection(select_type_options, n_clicks, values):
     #depending on button pressed, would want a dif graph output
-    #if curr_option == "Continuous Wave": 
-
-'''
+    if select_type_options == "Continuous Wave": 
+        print("in continuous wave")
+    if select_type_options == "Linear Frequency Modulated":
+        print("in lfm")
+    if select_type_options == "Binary Phase Shift Keying":
+        print("in bpsk")
 
 
 
@@ -70,10 +71,10 @@ app.layout = dbc.Container([
         dbc.Col([
                 html.Center(dcc.Markdown(children="##### Interactive Plot:")),
                 html.Div(graphs_display),
-                html.Div(html.P(some_words), id="testDrive"),
                 html.Br(),
                 html.Center(dcc.Markdown(children="##### 3-Dimensional Representation:")),
                 html.Div(three_dim_graph)]),
+                html.Center(html.P(id="show_selected", children= '')),
     ]),
 
 ])

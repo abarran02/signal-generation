@@ -42,7 +42,7 @@ graphs_display = dcc.Graph(figure={}, id="interactive_graph") #nothing in graph 
 three_dim_graph = dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})
 
 select_type_options = dcc.RadioItems(
-    create_radio_list(), value='Continuous Wave', style={'font-size': '18px', 'margin-left': '10px', 'display': 'flex','justifyContent':'center', 'textAlign': 'center'}
+    create_radio_list(), value='Continuous Wave', style={'fontSize': '18px', 'marginLeft': '10px', 'display': 'flex','justifyContent':'center', 'textAlign': 'center'}
 )
 
 #layout of the form (left component)
