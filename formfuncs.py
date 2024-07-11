@@ -20,19 +20,23 @@ def create_radio_list():
 
 def generate_inputs_list(selected_type):
     inp_lst = []
+    vals_lst = []
     for f in forms:
         if (f["name"] == selected_type):
             inputs = f #retrieve type from json file
             inputs = inputs['fields']
     for inp in inputs:
-        '''
-        if(inp["label"]!= "Sequencing Type:"):
+        curr_label = inp["label"]
+        if (curr_label == "Sequencing Type:" or curr_label == "Number of Bits:"):
+            if (curr_label == "Sequencing Type:"):
+                inp_lst.append(html.Label(curr_label))
+                inp_lst.append(dcc.Dropdown([inp["label"] for inp["options"] in inp]))
             inp_options = inp["label"]
-            inp_lst.append(dcc.Dropdown(inp_options["label"] for i in inp_options))
+            print("inside of here!")
+           # inp_lst.append(dcc.Dropdown(inp_options["label"] for i in inp_options))
         else:
-        '''
-        inp_lst.append(html.Label(inp["label"]))
-        inp_lst.append(dbc.Input(value=inp["value"], id=inp["name"]))
+            inp_lst.append(html.Label(inp["label"]))
+            inp_lst.append(dbc.Input(value=inp["value"], id=inp["name"]))
     return inp_lst
 
 #variable assignments

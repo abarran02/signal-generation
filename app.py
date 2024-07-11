@@ -42,15 +42,34 @@ def format_inputs_list(select_type_options):
     State("gen_inputs", component_property='children')
     #State[(id for i in inp_list)]
 )
-def forms_redirection(select_type_options, n_clicks, values):
+def forms_redirection(select_type_options, n_clicks, children):
     #depending on button pressed, would want a dif graph output
     if select_type_options == "Continuous Wave": 
         print("in continuous wave")
+        print("printtte")
+        child = children[0]
+        print(child)
+        return html.Div([child['type'] for child['props'] in child])
     if select_type_options == "Linear Frequency Modulated":
         print("in lfm")
     if select_type_options == "Binary Phase Shift Keying":
         print("in bpsk")
-
+'''
+[
+    Sample outlook of a child
+    {'children': [
+                    {'props': {'children': 'Sample Rate (Hz):'}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
+                    {'props': {'id': 'sample_rate', 'value': '20e6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
+                    {'props': {'children': 'Pulse Width (s):'}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
+                    {'props': {'id': 'pw', 'value': '10e-6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
+                    {'props': {'children': 'Pulse Repetition Interval (s):'}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
+                    {'props': {'id': 'signal_length', 'value': '20e-6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
+                    {'props': {'children': 'Amplitude'}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
+                    {'props': {'id': 'amplitude', 'value': '2000'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}
+                ]
+    }
+]     
+'''
 
 
 #form and graphs laid out together
