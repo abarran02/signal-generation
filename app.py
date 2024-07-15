@@ -44,21 +44,20 @@ def create_bpsk_dropdown(select_type_options):
         return {'display': 'none'}
 
 @app.callback(
-        Output("mlsbarker", component_property="children"),
+        Output("bit_count", "options"),
         Input(select_type_options, component_property='value'),
-        Input("seq_type", component_property="options"))
+        Input("seq_type", "value"))
 def create_dropdown(select_type_options, seq_type):
-    #seq_type = seq_type[1]['props']['options'] #filtering out for options
     mls_options = [4, 5, 6, 7, 8, 9]
     barker_options = [2, 3, 4, 5, 7, 11, 13]
     print("seq_type")
     print(seq_type)
-    if(seq_type == "Maximum Length Sequencing (MLS)"):
+    if(seq_type == "mls"):
         print(mls_options)
-        return dcc.Dropdown(options=mls_options, style={'color':'black', 'marginBottom': '15px'}, id="mb_options")
+        return mls_options
     else:
         print(barker_options)
-        return dcc.Dropdown(options=barker_options, style={'color':'black', 'marginBottom': '15px'}, id="mb_options")
+        return barker_options
 #crete graphs when button is pressed
 
 #callback types
@@ -110,8 +109,10 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
                 html.Br(),
-                form_options,
-                bpsk_extras,
+                html.Div([
+                    form_options,
+                    bpsk_extras,
+                ], style={'color': '#E9E8F2','backgroundColor':'#59585F', 'padding': '1.5rem 1rem', 'borderRadius': '10px'}),
                 html.Br(),
                 html.Center([
                     dbc.Button("Show Waveform", color="info", id="show_wave", style={'marginRight': '15px'}),

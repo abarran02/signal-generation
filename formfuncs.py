@@ -53,13 +53,16 @@ form_options = html.Div([
         dbc.Container(id="gen_inputs", children=[dbc.Col(generate_inputs_list("Continuous Wave"))]), #children is default value
         #dbc.Container(id="bpsk_dropdowns", children = []),
         #dbc.Container(id="mlsbarker", children=[]) #if type is bpsk, generate extra forms
-    ], style={'color': '#E9E8F2','backgroundColor':'#59585F', 'padding': '1.5rem 1rem', 'borderRadius': '10px'})
+    ])
 
 bpsk_extras = html.Div([
-            html.Label("Sequencing Type", style={'marginBottom': '5px', 'fontSize': '18px'}),
+            html.Label("Sequencing Type", style={'marginBottom': '5px', 'fontSize': '18px', 'marginLeft': '12px'}),
             dcc.Dropdown(options=[{"label": "Maximum Length Sequencing (MLS)", "value": "mls"},
-                                            {"label": "Barker Code", "value": "barker"}],     
-                                                style={'color':'black', 'marginBottom': '15px'},
-                                                id="seq_type"),
-            html.Label("Number of Bits:",style={'marginBottom': '5px', 'fontSize': '18px'})
+                                {"label": "Barker Code", "value": "barker"}],     
+                                    style={'color':'black', 'marginBottom': '15px', 'marginLeft': '7px', 'marginRight': '20px'},
+                                    id="seq_type"),
+            html.Label("Number of Bits:",style={'marginBottom': '5px', 'fontSize': '18px', 'marginLeft': '12px'}),
+            dcc.Dropdown(options=[],     
+                        style={'color':'black', 'marginBottom': '15px', 'marginLeft': '7px', 'marginRight': '20px'},
+                        id="bit_count")
         ], id = "bpsk_div", style= {'display': 'none'})
