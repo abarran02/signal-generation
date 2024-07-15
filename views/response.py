@@ -31,7 +31,6 @@ def send_bytes_response(pulse_bytes: bytes, prefix: str):
     )
 
 def send_interactive_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str):
-    print("reached interactive graph")
     df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
     fig = px.line(df,
         x=t,

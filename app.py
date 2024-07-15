@@ -6,6 +6,7 @@ from flask import Flask, render_template
 from formfuncs import *
 
 from views import wave_views
+from views.views import get_lfm
 
 server = Flask(__name__)
 server.register_blueprint(wave_views)
@@ -42,6 +43,7 @@ def create_bpsk_dropdown(select_type_options):
         return {'display': 'block'}
     else:
         return {'display': 'none'}
+
 #Creates the number of bits based on which seq_type is selected
 @app.callback(
         Output("bit_count", "options"),
@@ -64,38 +66,27 @@ def create_dropdown(seq_type):
     #State[(id for i in inp_list)]
 )
 def forms_redirection(select_type_options, n_clicks, children):
+    values = {} #dictionary of all input ids to values 
     if select_type_options == "Continuous Wave": 
-        values = {} #dictionary of all input ids to values 
         children = children[0]['props']['children']
-        for child in children:
-            dict = child['props']
-            #print('dict')
-            #print(dict)
-            if 'id' in dict.keys():
-                id_value = dict['id']
-                value = dict['value']
-                values[id_value] = value
-                #value output: {'sample_rate': '20e6', 'pw': '10e-6', 'signal_length': '20e-6', 'amplitude': '2000'}
+        create_vals_from_forms(children, values)
+        #value output: {'sample_rate': '20e6', 'pw': '10e-6', 'signal_length': '20e-6', 'amplitude': '2000'}
         return get_cw(values, "graph"), get_cw(values, "threeDim")
-    if select_type_options == "Linear Frequency Modulated":
-        print("in lfm")
-        print(children)
-    if select_type_options == "Binary Phase Shift Keying":
+    elif select_type_options == "Linear Frequency Modulated":
+        children = children['props']['children']
+        create_vals_from_forms(children, values)
+        return get_lfm(values, "graph"), get_lfm(values, "threeDim")
+    elif select_type_options == "Binary Phase Shift Keying":
         print("in bpsk")
         print(children)
-'''
-Sample outlook of a child
-[
-    {'props': {'children': 'Sample Rate (Hz):', 'style': {'marginBottom': '5px'}}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
-    {'props': {'id': 'sample_rate', 'style': {'marginBottom': '15px'}, 'value': '20e6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
-    {'props': {'children': 'Pulse Width (s):', 'style': {'marginBottom': '5px'}}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
-    {'props': {'id': 'pw', 'style': {'marginBottom': '15px'}, 'value': '10e-6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
-    {'props': {'children': 'Pulse Repetition Interval (s):', 'style': {'marginBottom': '5px'}}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
-    {'props': {'id': 'signal_length', 'style': {'marginBottom': '15px'}, 'value': '20e-6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
-    {'props': {'children': 'Amplitude', 'style': {'marginBottom': '5px'}}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
-    {'props': {'id': 'amplitude', 'style': {'marginBottom': '15px'}, 'value': '2000'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}]   
-]     
-'''
+#populate values (dictionary of all input ids to form values)
+def create_vals_from_forms(children, values):
+    for child in children:
+        dict = child['props']
+        if 'id' in dict.keys():
+            id_value = dict['id']
+            value = dict['value']
+            values[id_value] = value
 
 
 #form and graphs laid out together

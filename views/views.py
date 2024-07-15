@@ -28,27 +28,39 @@ def get_cw(data, form):
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
-def convert_cw_types(data):
+def convert_generic_inputs(data):
     data["sample_rate"] = float(data["sample_rate"])
-    data["amplitude"] = int(data["amplitude"])
+    data["amplitude"] = int(data["amplitude"])   
+    
+def convert_cw_types(data):
+    convert_generic_inputs(data)
     data["signal_length"] = float(data["signal_length"])
     data["pw"] = float(data["pw"])
 
+
 @wave_views.route("/lfm", methods=["GET"])
-def get_lfm():
+def get_lfm(data, form):
     schema = LFMSchema()
-    i = 0
     try:
-        data = schema.load(request.args)
+        data["form"] = form #hardcoded to 2d interactive for now
+        data["axes"] = '' #dummy param
+        data = schema.dump(data)
+        convert_lfm_types(data)
         pulse = su.linear_frequency_modulated.generate_lfm(data["sample_rate"], data["fstart"], data['fstop'], data["pw"], data["num_pulses"])
         pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], data["pri"], data["sample_rate"],  data["pw"], "lfm")
         pulse = np.tile(pulse, data["num_pulses"])
 
         return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"], data["num_pulses"],False)
-        
-
     except ValidationError as err:
-        return {"errors": err.messages}, 400
+        return {"errors": err.messages}, 400  
+
+def convert_lfm_types(data):
+    convert_generic_inputs(data)
+    data["fstart"] = float(data['fstart'])
+    data["fstop"] = float(data['fstop'])
+    data['num_pulses'] = int(data['num_pulses'])
+    data['pw'] = float(data['pw'])
+    data['pri'] = float(data['pri'])
 
 #For each pulse, create a filtered bpsk with a randomly generated sequence
 @wave_views.route("/bpsk", methods=["GET"])
