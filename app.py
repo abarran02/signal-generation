@@ -50,13 +50,9 @@ def create_bpsk_dropdown(select_type_options):
 def create_dropdown(select_type_options, seq_type):
     mls_options = [4, 5, 6, 7, 8, 9]
     barker_options = [2, 3, 4, 5, 7, 11, 13]
-    print("seq_type")
-    print(seq_type)
     if(seq_type == "mls"):
-        print(mls_options)
         return mls_options
     else:
-        print(barker_options)
         return barker_options
 #crete graphs when button is pressed
 
@@ -72,31 +68,38 @@ def create_dropdown(select_type_options, seq_type):
     #State[(id for i in inp_list)]
 )
 def forms_redirection(select_type_options, n_clicks, children):
+    values = {} #dictionary of all input ids to values 
+    children = children[0]['props']['children']
     #depending on button pressed, would want a dif graph output
     if select_type_options == "Continuous Wave": 
         print("in continuous wave")
-        print("printing the child")
-        child = children[0]
-        print(child)
-        return html.Div([child['type'] for child['props'] in child])
+        for child in children:
+            dict = child['props']
+            print('dict')
+            print(dict)
+            if 'id' in dict.keys():
+                id_value = dict['id']
+                value = dict['value']
+                values[id_value] = value
+                print('values')
+                print(values) 
     if select_type_options == "Linear Frequency Modulated":
         print("in lfm")
+        print(children)
     if select_type_options == "Binary Phase Shift Keying":
         print("in bpsk")
+        print(children)
 '''
+Sample outlook of a child
 [
-    Sample outlook of a child
-    {'children': [
-                    {'props': {'children': 'Sample Rate (Hz):'}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
-                    {'props': {'id': 'sample_rate', 'value': '20e6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
-                    {'props': {'children': 'Pulse Width (s):'}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
-                    {'props': {'id': 'pw', 'value': '10e-6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
-                    {'props': {'children': 'Pulse Repetition Interval (s):'}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
-                    {'props': {'id': 'signal_length', 'value': '20e-6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
-                    {'props': {'children': 'Amplitude'}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
-                    {'props': {'id': 'amplitude', 'value': '2000'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}
-                ]
-    }
+    {'props': {'children': 'Sample Rate (Hz):', 'style': {'marginBottom': '5px'}}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
+    {'props': {'id': 'sample_rate', 'style': {'marginBottom': '15px'}, 'value': '20e6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
+    {'props': {'children': 'Pulse Width (s):', 'style': {'marginBottom': '5px'}}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
+    {'props': {'id': 'pw', 'style': {'marginBottom': '15px'}, 'value': '10e-6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
+    {'props': {'children': 'Pulse Repetition Interval (s):', 'style': {'marginBottom': '5px'}}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
+    {'props': {'id': 'signal_length', 'style': {'marginBottom': '15px'}, 'value': '20e-6'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}, 
+    {'props': {'children': 'Amplitude', 'style': {'marginBottom': '5px'}}, 'type': 'Label', 'namespace': 'dash_html_components'}, 
+    {'props': {'id': 'amplitude', 'style': {'marginBottom': '15px'}, 'value': '2000'}, 'type': 'Input', 'namespace': 'dash_bootstrap_components'}]   
 ]     
 '''
 

@@ -11,7 +11,7 @@ forms_json = "templates/forms.json"
 with open(forms_json, "r") as f: 
     forms = json.load(f)
 
-#take forms.json parameters and format it as a list to be created as a Dash Component
+#take forms.json parameters and format it as a list to be created as a Dash Component in app.py
 def create_radio_list():
     radio_options = []
     for f in forms:
@@ -51,8 +51,6 @@ form_options = html.Div([
         html.Br(),
         html.Center(dcc.Markdown(children="### Inputs")),
         dbc.Container(id="gen_inputs", children=[dbc.Col(generate_inputs_list("Continuous Wave"))]), #children is default value
-        #dbc.Container(id="bpsk_dropdowns", children = []),
-        #dbc.Container(id="mlsbarker", children=[]) #if type is bpsk, generate extra forms
     ])
 
 bpsk_extras = html.Div([
@@ -72,8 +70,8 @@ bpsk_extras = html.Div([
                     dbc.Input(value=20, id="cutoff_freq", style={'marginBottom': '15px'})
                 ]),
                 dbc.Col([
-                    html.Label("Cutoff Frequency (Hz):"),
-                    dbc.Input(value=20, id="cutoff_freq", style={'marginBottom': '15px'})
+                    html.Label("Number of Taps:"),
+                    dbc.Input(value=2, id="num_taps", style={'marginBottom': '15px'})
                 ])
             ])
         ], id = "bpsk_div", style= {'display': 'none'})
