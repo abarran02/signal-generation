@@ -20,7 +20,6 @@ def create_radio_list():
 
 def generate_inputs_list(selected_type):
     inp_lst = []
-    vals_lst = []
     for f in forms:
         if (f["name"] == selected_type):
             inputs = f #retrieve type from json file
@@ -28,15 +27,10 @@ def generate_inputs_list(selected_type):
     for inp in inputs:
         curr_label = inp["label"]
         if (curr_label == "Sequencing Type:" or curr_label == "Number of Bits:"):
-            if (curr_label == "Sequencing Type:"):
-                inp_lst.append(html.Label(curr_label))
-                inp_lst.append(dcc.Dropdown([inp["label"] for inp["options"] in inp]))
-            inp_options = inp["label"]
-            print("inside of here!")
-           # inp_lst.append(dcc.Dropdown(inp_options["label"] for i in inp_options))
+            continue
         else:
-            inp_lst.append(html.Label(inp["label"]))
-            inp_lst.append(dbc.Input(value=inp["value"], id=inp["name"]))
+            inp_lst.append(html.Label(inp["label"], style={'marginBottom': '5px', 'fontSize': '18px'}))
+            inp_lst.append(dbc.Input(value=inp["value"], id=inp["name"], style={'marginBottom': '15px'}))
     return inp_lst
 
 #variable assignments
@@ -57,4 +51,15 @@ form_options = html.Div([
         html.Br(),
         html.Center(dcc.Markdown(children="### Inputs")),
         dbc.Container(id="gen_inputs", children=[dbc.Col(generate_inputs_list("Continuous Wave"))]), #children is default value
+        #dbc.Container(id="bpsk_dropdowns", children = []),
+        #dbc.Container(id="mlsbarker", children=[]) #if type is bpsk, generate extra forms
     ], style={'color': '#E9E8F2','backgroundColor':'#59585F', 'padding': '1.5rem 1rem', 'borderRadius': '10px'})
+
+bpsk_extras = html.Div([
+            html.Label("Sequencing Type", style={'marginBottom': '5px', 'fontSize': '18px'}),
+            dcc.Dropdown(options=[{"label": "Maximum Length Sequencing (MLS)", "value": "mls"},
+                                            {"label": "Barker Code", "value": "barker"}],     
+                                                style={'color':'black', 'marginBottom': '15px'},
+                                                id="seq_type"),
+            html.Label("Number of Bits:",style={'marginBottom': '5px', 'fontSize': '18px'})
+        ], id = "bpsk_div", style= {'display': 'none'})
