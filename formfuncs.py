@@ -29,7 +29,7 @@ def generate_inputs_list(selected_type):
         if (curr_label == "Sequencing Type:" or curr_label == "Number of Bits:"):
             continue
         else:
-            inp_lst.append(html.Label(inp["label"], style={'marginBottom': '5px', 'fontSize': '18px'}))
+            inp_lst.append(html.Label(inp["label"], style={'marginBottom': '5px'}))
             inp_lst.append(dbc.Input(value=inp["value"], id=inp["name"], style={'marginBottom': '15px'}))
     return inp_lst
 
@@ -56,13 +56,24 @@ form_options = html.Div([
     ])
 
 bpsk_extras = html.Div([
-            html.Label("Sequencing Type", style={'marginBottom': '5px', 'fontSize': '18px', 'marginLeft': '12px'}),
+            html.Label("Sequencing Type", style={'marginBottom': '5px'}),
             dcc.Dropdown(options=[{"label": "Maximum Length Sequencing (MLS)", "value": "mls"},
                                 {"label": "Barker Code", "value": "barker"}],     
-                                    style={'color':'black', 'marginBottom': '15px', 'marginLeft': '7px', 'marginRight': '20px'},
+                                    style={'color':'black', 'marginBottom': '15px'},
                                     id="seq_type"),
-            html.Label("Number of Bits:",style={'marginBottom': '5px', 'fontSize': '18px', 'marginLeft': '12px'}),
+            html.Label("Number of Bits:",style={'marginBottom': '5px'}),
             dcc.Dropdown(options=[],     
-                        style={'color':'black', 'marginBottom': '15px', 'marginLeft': '7px', 'marginRight': '20px'},
-                        id="bit_count")
+                        style={'color':'black', 'marginBottom': '15px'},
+                        id="bit_count"),
+            html.Center(dcc.Markdown(children="### Filtering")),
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Cutoff Frequency (Hz):"),
+                    dbc.Input(value=20, id="cutoff_freq", style={'marginBottom': '15px'})
+                ]),
+                dbc.Col([
+                    html.Label("Cutoff Frequency (Hz):"),
+                    dbc.Input(value=20, id="cutoff_freq", style={'marginBottom': '15px'})
+                ])
+            ])
         ], id = "bpsk_div", style= {'display': 'none'})
