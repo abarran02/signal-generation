@@ -13,11 +13,11 @@ wave_views = Blueprint("wave_views", __name__, url_prefix="/generate")
 # generates the designated pulse where each pulse repetition interval (pri) = pulse width + zeros for the remaining space
 # returns the pulse to be displayed by output_cases
 @wave_views.route("/cw", methods=["GET"])
-def get_cw(data):
+def get_cw(data, form):
     schema = CWSchema()
 
     try:
-        data["form"] = 'threeDim' #hardcoded to 2d interactive for now
+        data["form"] = form #hardcoded to 2d interactive for now
         data["axes"] = '' #dummy param
         data = schema.dump(data)
         convert_cw_types(data)

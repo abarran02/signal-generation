@@ -53,25 +53,20 @@ def create_dropdown(seq_type):
         return mls_options
     else:
         return barker_options
-#crete graphs when button is pressed
-
-#callback types
-# 1st one: check if it's bpsk, generate dropdowns if so-- 
-#2nd one, which dropdown for number of bits should be shown
+#crete corresponding waveform graphs when button is pressed
 @app.callback(
     #Output(graphs_display, component_property='figure'),
     Output("interactive_graph" , component_property= 'children'),
+    Output("three_dim_graph" , component_property= 'children'),
     State(select_type_options, component_property='value'),
     Input("show_wave", component_property='n_clicks'), 
     State("gen_inputs", component_property='children')
     #State[(id for i in inp_list)]
 )
 def forms_redirection(select_type_options, n_clicks, children):
-    values = {} #dictionary of all input ids to values 
-    children = children[0]['props']['children']
-    #depending on button pressed, would want a dif graph output
     if select_type_options == "Continuous Wave": 
-        print("in continuous wave")
+        values = {} #dictionary of all input ids to values 
+        children = children[0]['props']['children']
         for child in children:
             dict = child['props']
             #print('dict')
@@ -81,7 +76,7 @@ def forms_redirection(select_type_options, n_clicks, children):
                 value = dict['value']
                 values[id_value] = value
                 #value output: {'sample_rate': '20e6', 'pw': '10e-6', 'signal_length': '20e-6', 'amplitude': '2000'}
-        return get_cw(values)
+        return get_cw(values, "graph"), get_cw(values, "threeDim")
     if select_type_options == "Linear Frequency Modulated":
         print("in lfm")
         print(children)
@@ -123,10 +118,12 @@ app.layout = dbc.Container([
             ], style={'marginTop': '1%'}),
         dbc.Col([
                 html.Center(dcc.Markdown(children="##### Interactive Plot:")),
-                html.Div(id="interactive_graph", children = [dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})]),
+                html.Div(id="interactive_graph", children = [dcc.Graph(figure={}, id="interactive", style={'marginBottom': '30px'})]),
                 html.Br(),
                 html.Center(dcc.Markdown(children="##### Three-Dimensional Representation:")),
-                html.Div(id="three_dim_graph", children = [dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})])])
+                html.Div(id="three_dim_graph", children = [dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})]),
+                html.Br()
+                ])
     ]),
 
 ])
