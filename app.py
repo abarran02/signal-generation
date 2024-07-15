@@ -25,7 +25,7 @@ app = Dash(server=server, external_stylesheets=[dbc.themes.SLATE], prevent_initi
 
 
 #Create rest of the form based on wave type selected 
-@app.callback(
+@app.callback( 
     Output("gen_inputs", component_property='children'),
     Input(select_type_options, component_property='value')
 )
@@ -42,12 +42,11 @@ def create_bpsk_dropdown(select_type_options):
         return {'display': 'block'}
     else:
         return {'display': 'none'}
-
+#Creates the number of bits based on which seq_type is selected
 @app.callback(
         Output("bit_count", "options"),
-        Input(select_type_options, component_property='value'),
         Input("seq_type", "value"))
-def create_dropdown(select_type_options, seq_type):
+def create_dropdown(seq_type):
     mls_options = [4, 5, 6, 7, 8, 9]
     barker_options = [2, 3, 4, 5, 7, 11, 13]
     if(seq_type == "mls"):
@@ -124,10 +123,10 @@ app.layout = dbc.Container([
             ], style={'marginTop': '1%'}),
         dbc.Col([
                 html.Center(dcc.Markdown(children="##### Interactive Plot:")),
-                html.Div(id="interactive_graph", children = []),
+                html.Div(id="interactive_graph", children = [dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})]),
                 html.Br(),
                 html.Center(dcc.Markdown(children="##### Three-Dimensional Representation:")),
-                html.Div(three_dim_graph)])
+                html.Div(id="three_dim_graph", children = [dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})])])
     ]),
 
 ])

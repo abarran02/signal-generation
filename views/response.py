@@ -84,7 +84,8 @@ def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16],
 
     fig.update_layout(height = 800)
     fig.update_traces(marker=dict(size=5)) #size of markers
-    fig_html = fig.to_html()
+    return dcc.Graph(figure=fig)
+    #fig_html = fig.to_html()
 
     return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 

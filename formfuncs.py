@@ -1,5 +1,5 @@
 import json
-from dash import Dash, html, dcc, Output, Input #gives interactivity
+from dash import html, dcc #gives interactivity
 from views import * 
 import dash_bootstrap_components as dbc
 
@@ -36,7 +36,7 @@ def generate_inputs_list(selected_type):
 #variable assignments
 
 page_title = dcc.Markdown(children = '# Waveform Visualization')
-graphs_display = dcc.Graph(figure={}, id="interactive_graph") #nothing in graph in the beginning
+#graphs_display = dcc.Graph(figure={}, id="interactive_graph") #nothing in graph in the beginning
 three_dim_graph = dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})
 
 select_type_options = dcc.RadioItems(
