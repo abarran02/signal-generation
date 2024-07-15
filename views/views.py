@@ -13,6 +13,27 @@ wave_views = Blueprint("wave_views", __name__, url_prefix="/generate")
 # generates the designated pulse where each pulse repetition interval (pri) = pulse width + zeros for the remaining space
 # returns the pulse to be displayed by output_cases
 @wave_views.route("/cw", methods=["GET"])
+def get_cw(data):
+    schema = CWSchema()
+
+    try:
+        data["form"] = 'graph' #hardcoded to 2d interactive for now
+        data["axes"] = '' #dummy param
+        data = schema.dump(data)
+        convert_cw_types(data)
+        pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["pw"])
+        pulse = get_pulse_blanks(pulse, 1, data["amplitude"], data["signal_length"], data["sample_rate"], data["pw"], "cw")
+
+        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 1, False)
+
+    except ValidationError as err:
+        return {"errors": err.messages}, 400
+def convert_cw_types(data):
+    data["sample_rate"] = float(data["sample_rate"])
+    data["amplitude"] = int(data["amplitude"])
+    data["signal_length"] = float(data["signal_length"])
+    data["pw"] = float(data["pw"])
+'''
 def get_cw():
     schema = CWSchema()
 
@@ -25,6 +46,7 @@ def get_cw():
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
+'''
 
 @wave_views.route("/lfm", methods=["GET"])
 def get_lfm():

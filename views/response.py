@@ -9,6 +9,7 @@ from flask import Response, render_template, send_file
 from matplotlib.figure import Figure
 from numpy.typing import NDArray
 from plotly_resampler import register_plotly_resampler
+from dash import dcc
 
 
 from signal_utils.common.binary_file_ops import get_iq_bytes
@@ -30,6 +31,7 @@ def send_bytes_response(pulse_bytes: bytes, prefix: str):
     )
 
 def send_interactive_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str):
+    print("reached interactive graph")
     df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
     fig = px.line(df,
         x=t,
@@ -37,9 +39,10 @@ def send_interactive_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16],
         title=f"{abbr.upper()} Graph"
     )
     fig.update_layout(xaxis_title="Time (s)", yaxis_title="Amplitude", height=750)
-    fig_html = fig.to_html()
+    return dcc.Graph(figure=fig)
+# fig_html = fig.to_html()
 
-    return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
+#    return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 
 def send_plot_image(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str, axes: str):
     fig = Figure()

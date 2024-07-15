@@ -61,7 +61,7 @@ def create_dropdown(select_type_options, seq_type):
 #2nd one, which dropdown for number of bits should be shown
 @app.callback(
     #Output(graphs_display, component_property='figure'),
-    Output("show_selected" , component_property = "children"),
+    Output("interactive_graph" , component_property= 'children'),
     State(select_type_options, component_property='value'),
     Input("show_wave", component_property='n_clicks'), 
     State("gen_inputs", component_property='children')
@@ -75,14 +75,14 @@ def forms_redirection(select_type_options, n_clicks, children):
         print("in continuous wave")
         for child in children:
             dict = child['props']
-            print('dict')
-            print(dict)
+            #print('dict')
+            #print(dict)
             if 'id' in dict.keys():
                 id_value = dict['id']
                 value = dict['value']
                 values[id_value] = value
-                print('values')
-                print(values) 
+                #value output: {'sample_rate': '20e6', 'pw': '10e-6', 'signal_length': '20e-6', 'amplitude': '2000'}
+        return get_cw(values)
     if select_type_options == "Linear Frequency Modulated":
         print("in lfm")
         print(children)
@@ -124,11 +124,10 @@ app.layout = dbc.Container([
             ], style={'marginTop': '1%'}),
         dbc.Col([
                 html.Center(dcc.Markdown(children="##### Interactive Plot:")),
-                html.Div(graphs_display),
+                html.Div(id="interactive_graph", children = []),
                 html.Br(),
                 html.Center(dcc.Markdown(children="##### Three-Dimensional Representation:")),
-                html.Div(three_dim_graph)]),
-                html.Center(html.P(id="show_selected", children= '')),
+                html.Div(three_dim_graph)])
     ]),
 
 ])
