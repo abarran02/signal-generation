@@ -4,6 +4,7 @@ from marshmallow import ValidationError
 
 import signal_utils as su
 from signal_utils.common.sequences import generate_fbpsk
+from views.form_typing import *
 
 from .response import output_cases
 from .schema import *
@@ -28,14 +29,6 @@ def get_cw(data, form):
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
-def convert_generic_inputs(data):
-    data["sample_rate"] = float(data["sample_rate"])
-    data["amplitude"] = int(data["amplitude"])   
-    
-def convert_cw_types(data):
-    convert_generic_inputs(data)
-    data["signal_length"] = float(data["signal_length"])
-    data["pw"] = float(data["pw"])
 
 
 @wave_views.route("/lfm", methods=["GET"])
@@ -54,44 +47,26 @@ def get_lfm(data, form):
     except ValidationError as err:
         return {"errors": err.messages}, 400  
 
-def convert_lfm_types(data):
-    convert_generic_inputs(data)
-    data["fstart"] = float(data['fstart'])
-    data["fstop"] = float(data['fstop'])
-    data['num_pulses'] = int(data['num_pulses'])
-    data['pw'] = float(data['pw'])
-    data['pri'] = float(data['pri'])
-
 #For each pulse, create a filtered bpsk with a randomly generated sequence
 @wave_views.route("/bpsk", methods=["GET"])
 def get_bpsk(data, form):
     schema = BPSKSchema()
     try:
-        print("data")
-        print(data['num_bits'])
         data["form"] = form #hardcoded to 2d interactive for now
         data["axes"] = '' #dummy param
         #data = schema.dump(data)
         convert_bpsk_types(data)
-        print("converted bpsk")
         final_pulse = np.empty(0)
         num_bit = data["num_bits"]
         for __ in range(data["num_pulses"]):
             single_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"], num_bit, data["sample_rate"], data["bit_length"], data["seq_type"], data["pulse_reps"], data["num_pulses"])
             single_pulse = get_pulse_blanks(single_pulse, data["num_pulses"], data["amplitude"], data["pulse_reps"], data["sample_rate"], 1, "bpsk")
             final_pulse = np.append(final_pulse,single_pulse)
-        print("output cases bpsk")
         return output_cases(final_pulse, data["form"], data["pulse_reps"], "bpsk", data["axes"], data["num_pulses"], True) 
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
-def convert_bpsk_types(data):
-    convert_generic_inputs(data)
-    data["bit_length"] = float(data["bit_length"])
-    data["num_pulses"] = int(data["num_pulses"])
-    data["pulse_reps"] = float(data['pulse_reps'])
-    data["cutoff_freq"] = int(data["cutoff_freq"])
-    data["num_taps"] = int(data["num_taps"])
+
 
 #Returns the pulse with blanks spaces according
 def get_pulse_blanks(pulse, num_pulses, amplitude, pri, sample_rate, pulse_width, wave_type):

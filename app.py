@@ -85,7 +85,6 @@ def forms_redirection(select_type_options, n_clicks, seq_type, num_bits, cutoff_
         children = children['props']['children']
         create_vals_from_forms(children, values)
         create_vals_for_bpsk(values, seq_type, num_bits, cutoff_freq, num_taps)
-        print("right before get_bpsk")
         return get_bpsk(values, "graph"), get_bpsk(values, "threeDim")
 
 #populate values (dictionary of all input ids to form values)
@@ -105,7 +104,7 @@ def create_vals_for_bpsk(values, seq_type, num_bits, cutoff_freq, num_taps):
 
 #given the selected waveform type, download to corresponding .sc16 file when button is pressed 
 @app.callback(
-    Output("download-sc16", component_property='children'),
+    Output("download-sc16", component_property='data'),
     State(select_type_options, component_property='value'),
     Input("download", component_property='n_clicks'), 
     State("seq_type", "value"),
@@ -119,8 +118,6 @@ def download_wave(select_type_options, n_clicks, seq_type, num_bits, cutoff_freq
     if select_type_options == "Continuous Wave": 
         children = children[0]['props']['children']
         create_vals_from_forms(children, values)
-        print("got values")
-        print(values)
         return get_cw(values, "sc16")
     
     elif select_type_options == "Linear Frequency Modulated":
@@ -132,7 +129,6 @@ def download_wave(select_type_options, n_clicks, seq_type, num_bits, cutoff_freq
         children = children['props']['children']
         create_vals_from_forms(children, values)
         create_vals_for_bpsk(values, seq_type, num_bits, cutoff_freq, num_taps)
-        print("right before get_bpsk")
         return get_bpsk(values, "sc16")
     
 #form and graphs laid out together
@@ -151,9 +147,9 @@ app.layout = dbc.Container([
                 html.Center([
                     dbc.Button("Show Waveform", color="info", id="show_wave", style={'marginRight': '15px'}),
                     dbc.Button("Download .sc16", color ="info", id="download"),
-                    html.Div(id="download-sc16")
+                    dcc.Download(id="download-sc16")
                     ])
-            ], style={'marginTop': '1%'}),
+            ], style={'marginTop': '1%', 'width': '20%'}),
         dbc.Col([
                 html.Center(dcc.Markdown(children="##### Interactive Plot:")),
                 html.Div(id="interactive_graph", children = [dcc.Graph(figure={}, id="interactive", style={'marginBottom': '30px'})]),
@@ -161,7 +157,7 @@ app.layout = dbc.Container([
                 html.Center(dcc.Markdown(children="##### Three-Dimensional Representation:")),
                 html.Div(id="three_dim_graph", children = [dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})]),
                 html.Br()
-                ])
+                ], style = {'width': '80%'})
     ]),
 
 ])

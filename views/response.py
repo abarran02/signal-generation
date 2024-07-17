@@ -1,11 +1,12 @@
 from datetime import datetime
 from io import BytesIO
 
+import base64
 import matplotlib
 import numpy as np
 import pandas as pd
 import plotly.express as px
-from flask import Response, render_template, send_file
+from flask import Response, render_template, send_file, jsonify
 from matplotlib.figure import Figure
 from numpy.typing import NDArray
 from plotly_resampler import register_plotly_resampler
@@ -18,18 +19,18 @@ from signal_utils.common.binary_file_ops import get_iq_bytes
 register_plotly_resampler(mode='auto')  # improves plotly scalability
 matplotlib.use("agg")  # limit matplotlib to png backend
 
+#make json serializable version of original send_bytes_response
 def send_bytes_response(pulse_bytes: bytes, prefix: str):
     # get current time for file naming
     now = datetime.now()
     formatted_time = now.strftime("%Y%m%d_%H%M%S")
-    print("sending file...")
 
-    return send_file(
-        BytesIO(pulse_bytes),
-        mimetype="application/octet-stream",
-        as_attachment=True,
-        download_name=f"{prefix}_{formatted_time}.sc16"
-    )
+    encode_bytes = base64.b64encode(pulse_bytes).decode('utf-8')
+    response = { #create a dictionary with needed contents 
+        'content': encode_bytes,
+        'filename': f"{prefix}_{formatted_time}.sc16",
+    }
+    return response
 '''
    def send_bytes_response(pulse_bytes: bytes, prefix: str):
     # get current time for file naming
@@ -52,7 +53,8 @@ def send_interactive_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16],
         y=df.columns,
         title=f"{abbr.upper()} Graph"
     )
-    fig.update_layout(xaxis_title="Time (s)", yaxis_title="Amplitude", height=750)
+    fig.update_layout(xaxis_title="Time (s)", yaxis_title="Amplitude", height=750),
+    fig.update_layout(legend=dict(yanchor="top", y=1, xanchor="left", x=1)) 
     return dcc.Graph(figure=fig)
 # fig_html = fig.to_html()
 
