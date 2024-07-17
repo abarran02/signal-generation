@@ -55,9 +55,9 @@ def create_dropdown(seq_type):
         return mls_options
     else:
         return barker_options
+    
 #crete corresponding waveform graphs when button is pressed
 @app.callback(
-    #Output(graphs_display, component_property='figure'),
     Output("interactive_graph" , component_property= 'children'),
     Output("three_dim_graph" , component_property= 'children'),
     State(select_type_options, component_property='value'),
@@ -67,7 +67,6 @@ def create_dropdown(seq_type):
     State("cutoff_freq", "value"),
     State("num_taps", "value"),
     State("gen_inputs", component_property='children')
-    #State[(id for i in inp_list)]
 )
 def forms_redirection(select_type_options, n_clicks, seq_type, num_bits, cutoff_freq, num_taps, children):
     values = {} #dictionary of all input ids to values 
@@ -97,13 +96,45 @@ def create_vals_from_forms(children, values):
             id_value = dict['id']
             value = dict['value']
             values[id_value] = value
-
+#adds additional bpsk inputs into the values dictionary
 def create_vals_for_bpsk(values, seq_type, num_bits, cutoff_freq, num_taps):
     values["seq_type"] = seq_type
     values["num_bits"] = num_bits
     values["cutoff_freq"] = cutoff_freq
     values["num_taps"] = num_taps
 
+#given the selected waveform type, download to corresponding .sc16 file when button is pressed 
+@app.callback(
+    Output("download-sc16", component_property='children'),
+    State(select_type_options, component_property='value'),
+    Input("download", component_property='n_clicks'), 
+    State("seq_type", "value"),
+    State("num_bits", "value"),
+    State("cutoff_freq", "value"),
+    State("num_taps", "value"),
+    State("gen_inputs", component_property='children')
+)
+def download_wave(select_type_options, n_clicks, seq_type, num_bits, cutoff_freq, num_taps, children):
+    values = {} #dictionary of all input ids to values 
+    if select_type_options == "Continuous Wave": 
+        children = children[0]['props']['children']
+        create_vals_from_forms(children, values)
+        print("got values")
+        print(values)
+        return get_cw(values, "sc16")
+    
+    elif select_type_options == "Linear Frequency Modulated":
+        children = children['props']['children']
+        create_vals_from_forms(children, values)
+        return get_lfm(values, "sc16")
+    
+    elif select_type_options == "Binary Phase Shift Keying":
+        children = children['props']['children']
+        create_vals_from_forms(children, values)
+        create_vals_for_bpsk(values, seq_type, num_bits, cutoff_freq, num_taps)
+        print("right before get_bpsk")
+        return get_bpsk(values, "sc16")
+    
 #form and graphs laid out together
 app.layout = dbc.Container([
     html.Br(),
@@ -119,7 +150,8 @@ app.layout = dbc.Container([
                 html.Br(),
                 html.Center([
                     dbc.Button("Show Waveform", color="info", id="show_wave", style={'marginRight': '15px'}),
-                    dbc.Button("Download .sc16", color ="info", id="download")
+                    dbc.Button("Download .sc16", color ="info", id="download"),
+                    html.Div(id="download-sc16")
                     ])
             ], style={'marginTop': '1%'}),
         dbc.Col([
