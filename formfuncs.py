@@ -36,8 +36,6 @@ def generate_inputs_list(selected_type):
 #variable assignments
 
 page_title = dcc.Markdown(children = '# Waveform Visualization')
-#graphs_display = dcc.Graph(figure={}, id="interactive_graph") #nothing in graph in the beginning
-three_dim_graph = dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})
 
 select_type_options = dcc.RadioItems(
     create_radio_list(), value='Continuous Wave', style={'fontSize': '18px', 'marginLeft': '10px', 'display': 'flex','justifyContent':'center', 'textAlign': 'center'}
@@ -56,13 +54,13 @@ form_options = html.Div([
 bpsk_extras = html.Div([
             html.Label("Sequencing Type", style={'marginBottom': '5px'}),
             dcc.Dropdown(options=[{"label": "Maximum Length Sequencing (MLS)", "value": "mls"},
-                                {"label": "Barker Code", "value": "barker"}],     
-                                    style={'color':'black', 'marginBottom': '15px'},
-                                    id="seq_type"),
+                                {"label": "Barker Code", "value": "barker"}], 
+                                style={'color':'black', 'marginBottom': '15px'},
+                                id="seq_type"),
             html.Label("Number of Bits:",style={'marginBottom': '5px'}),
             dcc.Dropdown(options=[],     
                         style={'color':'black', 'marginBottom': '15px'},
-                        id="bit_count"),
+                        id="num_bits"),
             html.Center(dcc.Markdown(children="### Filtering")),
             dbc.Row([
                 dbc.Col([

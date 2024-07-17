@@ -6,7 +6,7 @@ from flask import Flask, render_template
 from formfuncs import *
 
 from views import wave_views
-from views.views import get_lfm
+from views.views import get_lfm, get_bpsk
 
 server = Flask(__name__)
 server.register_blueprint(wave_views)
@@ -46,7 +46,7 @@ def create_bpsk_dropdown(select_type_options):
 
 #Creates the number of bits based on which seq_type is selected
 @app.callback(
-        Output("bit_count", "options"),
+        Output("num_bits", "options"),
         Input("seq_type", "value"))
 def create_dropdown(seq_type):
     mls_options = [4, 5, 6, 7, 8, 9]
@@ -62,23 +62,33 @@ def create_dropdown(seq_type):
     Output("three_dim_graph" , component_property= 'children'),
     State(select_type_options, component_property='value'),
     Input("show_wave", component_property='n_clicks'), 
+    State("seq_type", "value"),
+    State("num_bits", "value"),
+    State("cutoff_freq", "value"),
+    State("num_taps", "value"),
     State("gen_inputs", component_property='children')
     #State[(id for i in inp_list)]
 )
-def forms_redirection(select_type_options, n_clicks, children):
+def forms_redirection(select_type_options, n_clicks, seq_type, num_bits, cutoff_freq, num_taps, children):
     values = {} #dictionary of all input ids to values 
     if select_type_options == "Continuous Wave": 
         children = children[0]['props']['children']
         create_vals_from_forms(children, values)
         #value output: {'sample_rate': '20e6', 'pw': '10e-6', 'signal_length': '20e-6', 'amplitude': '2000'}
         return get_cw(values, "graph"), get_cw(values, "threeDim")
+    
     elif select_type_options == "Linear Frequency Modulated":
         children = children['props']['children']
         create_vals_from_forms(children, values)
         return get_lfm(values, "graph"), get_lfm(values, "threeDim")
+    
     elif select_type_options == "Binary Phase Shift Keying":
-        print("in bpsk")
-        print(children)
+        children = children['props']['children']
+        create_vals_from_forms(children, values)
+        create_vals_for_bpsk(values, seq_type, num_bits, cutoff_freq, num_taps)
+        print("right before get_bpsk")
+        return get_bpsk(values, "graph"), get_bpsk(values, "threeDim")
+
 #populate values (dictionary of all input ids to form values)
 def create_vals_from_forms(children, values):
     for child in children:
@@ -88,6 +98,11 @@ def create_vals_from_forms(children, values):
             value = dict['value']
             values[id_value] = value
 
+def create_vals_for_bpsk(values, seq_type, num_bits, cutoff_freq, num_taps):
+    values["seq_type"] = seq_type
+    values["num_bits"] = num_bits
+    values["cutoff_freq"] = cutoff_freq
+    values["num_taps"] = num_taps
 
 #form and graphs laid out together
 app.layout = dbc.Container([
