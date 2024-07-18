@@ -108,8 +108,13 @@ def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16],
 def determine_cam_eye(view):
     if view == "default":
         return dict(x=1.25, y=1.25, z=1.25)
-    elif view == "top":
+    elif view == "real_z":
         return dict(x=0., y=2.5, z=0.)
+    elif view == "imag_z":
+        return dict(x=2.5, y=0., z=0.)
+    elif view == "imag_real":
+        return dict(x=0., y=0., z=2.5)
+
  
 def output_cases(pulse: NDArray[np.complex64], form: str, tstop: float, abbr: str, axes: str, num_pulses: int, is_bpsk: bool, view: str) -> Response:
     if form == "sc16":

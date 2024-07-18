@@ -65,38 +65,43 @@ def create_dropdown(seq_type):
 @app.callback(
     Output("interactive_graph" , component_property= 'children'),
     Output("three_dim_graph" , component_property= 'children'),
+
     State(select_type_options, component_property='value'),
+
     Input("show_wave", component_property='n_clicks'), 
+    Input("real_z", component_property='n_clicks'), 
+    Input("imag_z", component_property='n_clicks'),
+    Input("imag_real", component_property='n_clicks'),
+
     State("seq_type", "value"),
     State("num_bits", "value"),
     State("cutoff_freq", "value"),
     State("num_taps", "value"),
-    State("gen_inputs", component_property='children')
+    State("gen_inputs", component_property='children'),
+
+    prevent_initial_call=True
 )
-def forms_redirection(select_type_options, n_clicks, seq_type, num_bits, cutoff_freq, num_taps, children):
-    return populate_graphs(select_type_options, seq_type, num_bits, cutoff_freq, num_taps, children)
+def forms_redirection(select_type_options, b1, b2, b3, b4, seq_type, num_bits, cutoff_freq, num_taps, children):
+    return populate_graphs(select_type_options, b1, b2, b3, b4, seq_type, num_bits, cutoff_freq, num_taps, children)
 
 ### CONTROL GRAPH CAMERA ANGLES ###
 
 #display a top view
+'''
 @app.callback(
     Output("tester", 'children'),
-    #Output("three_dim", component_property='figure'),
     Input("three_dim_graph", component_property='children'),
-    Input("real_z", component_property='n_clicks')
+    State(select_type_options, component_property='value'),
+    Input("real_z", component_property='n_clicks'),
+    prevent_initial_call=True
 )
-def update_real_z(children, n_clicks):
-    camera = dict( #default camera views 
-        eye=dict(x=0., y=2.5, z=0.)
-    )
-    children = children['props']['camera']
-    #figure = go.Figure()
-    #figure.add_trace(children['props']['figure'])
-    #figure.update_layout(scene_camera = camera)
-    return str(children)
+def update_real_z(children, options, n_clicks):
+    values = {} #dictionary of all input ids to values 
+    #children = children[0]['props']['children']
+    create_vals_from_forms(children, values)
+    return get_cw(values, "threeDim", "real_z")
+'''
 
-    #print(children)
-    #return children.update_layout(eye=dict(x=0., y=2.5, z=0.))
 
 
 ### DOWNLOAD CALLBACK ###
