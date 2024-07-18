@@ -89,7 +89,7 @@ def send_plot_image(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: 
         mimetype="image/png"
     )
 
-def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str):
+def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str, view: str):
     df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
     fig = px.scatter_3d(df,
                         x = df.loc[:, "real"],
@@ -97,17 +97,22 @@ def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16],
                         z = t,
                         title = "3D Representation of " + abbr.upper()
                         )
-
+    camera = dict( #default camera views 
+        eye= determine_cam_eye(view) 
+        )
     fig.update_layout(height = 800)
+    fig.update_layout(scene_camera=camera)
     fig.update_traces(marker=dict(size=5)) #size of markers
     return dcc.Graph(figure=fig)
-    #fig_html = fig.to_html()
 
-    return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
-
-def output_cases(pulse: NDArray[np.complex64], form: str, tstop: float, abbr: str, axes: str, num_pulses: int, is_bpsk: bool) -> Response:
+def determine_cam_eye(view):
+    if view == "default":
+        return dict(x=1.25, y=1.25, z=1.25)
+    elif view == "top":
+        return dict(x=0., y=2.5, z=0.)
+ 
+def output_cases(pulse: NDArray[np.complex64], form: str, tstop: float, abbr: str, axes: str, num_pulses: int, is_bpsk: bool, view: str) -> Response:
     if form == "sc16":
-        print("inside of form sc16")
         pulse_bytes = get_iq_bytes(pulse)
         return send_bytes_response(pulse_bytes, abbr)
 
@@ -121,4 +126,4 @@ def output_cases(pulse: NDArray[np.complex64], form: str, tstop: float, abbr: st
 
     elif form == "threeDim":
         t = np.linspace(0, tstop*num_pulses, pulse.shape[0])
-        return create_three_dim_graph(pulse, t, abbr)
+        return create_three_dim_graph(pulse, t, abbr, view)

@@ -14,7 +14,7 @@ wave_views = Blueprint("wave_views", __name__, url_prefix="/generate")
 # generates the designated pulse where each pulse repetition interval (pri) = pulse width + zeros for the remaining space
 # returns the pulse to be displayed by output_cases
 @wave_views.route("/cw", methods=["GET"])
-def get_cw(data, form):
+def get_cw(data, form, view):
     schema = CWSchema()
 
     try:
@@ -25,14 +25,14 @@ def get_cw(data, form):
         pulse = su.continuous_wave.generate_cw(data["sample_rate"], data["pw"])
         pulse = get_pulse_blanks(pulse, 1, data["amplitude"], data["signal_length"], data["sample_rate"], data["pw"], "cw")
 
-        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 1, False)
+        return output_cases(pulse, data["form"], data["signal_length"], "CW", data["axes"], 1, False, view)
 
     except ValidationError as err:
         return {"errors": err.messages}, 400
 
 
 @wave_views.route("/lfm", methods=["GET"])
-def get_lfm(data, form):
+def get_lfm(data, form, view):
     schema = LFMSchema()
     try:
         data["form"] = form #hardcoded to 2d interactive for now
@@ -43,13 +43,13 @@ def get_lfm(data, form):
         pulse = get_pulse_blanks(pulse, data["num_pulses"], data["amplitude"], data["pri"], data["sample_rate"],  data["pw"], "lfm")
         pulse = np.tile(pulse, data["num_pulses"])
 
-        return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"], data["num_pulses"],False)
+        return output_cases(pulse, data["form"], data["pri"], "lfm", data["axes"], data["num_pulses"],False, view)
     except ValidationError as err:
         return {"errors": err.messages}, 400  
 
 #For each pulse, create a filtered bpsk with a randomly generated sequence
 @wave_views.route("/bpsk", methods=["GET"])
-def get_bpsk(data, form):
+def get_bpsk(data, form, view):
     schema = BPSKSchema()
     try:
         data["form"] = form #hardcoded to 2d interactive for now
@@ -62,7 +62,7 @@ def get_bpsk(data, form):
             single_pulse = generate_fbpsk(data["cutoff_freq"], data["num_taps"], num_bit, data["sample_rate"], data["bit_length"], data["seq_type"], data["pulse_reps"], data["num_pulses"])
             single_pulse = get_pulse_blanks(single_pulse, data["num_pulses"], data["amplitude"], data["pulse_reps"], data["sample_rate"], 1, "bpsk")
             final_pulse = np.append(final_pulse,single_pulse)
-        return output_cases(final_pulse, data["form"], data["pulse_reps"], "bpsk", data["axes"], data["num_pulses"], True) 
+        return output_cases(final_pulse, data["form"], data["pulse_reps"], "bpsk", data["axes"], data["num_pulses"], True, view) 
 
     except ValidationError as err:
         return {"errors": err.messages}, 400

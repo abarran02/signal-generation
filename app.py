@@ -1,4 +1,5 @@
 import json
+import plotly.graph_objs as go
 
 from dash import Dash, html, dcc, Output, Input, State #gives interactivity
 import dash_bootstrap_components as dbc
@@ -75,6 +76,29 @@ def create_dropdown(seq_type):
 def forms_redirection(select_type_options, n_clicks, seq_type, num_bits, cutoff_freq, num_taps, children):
     return populate_graphs(select_type_options, seq_type, num_bits, cutoff_freq, num_taps, children)
 
+### CONTROL GRAPH CAMERA ANGLES ###
+
+#display a top view
+@app.callback(
+    Output("tester", 'children'),
+    #Output("three_dim", component_property='figure'),
+    Input("three_dim_graph", component_property='children'),
+    Input("real_z", component_property='n_clicks')
+)
+def update_real_z(children, n_clicks):
+    camera = dict( #default camera views 
+        eye=dict(x=0., y=2.5, z=0.)
+    )
+    children = children['props']['camera']
+    #figure = go.Figure()
+    #figure.add_trace(children['props']['figure'])
+    #figure.update_layout(scene_camera = camera)
+    return str(children)
+
+    #print(children)
+    #return children.update_layout(eye=dict(x=0., y=2.5, z=0.))
+
+
 ### DOWNLOAD CALLBACK ###
 
 #given the selected waveform type, download to corresponding .sc16 file when button is pressed 
@@ -90,6 +114,7 @@ def forms_redirection(select_type_options, n_clicks, seq_type, num_bits, cutoff_
 )
 def download_wave(select_type_options, n_clicks, seq_type, num_bits, cutoff_freq, num_taps, children):
     return download_wave_helper(select_type_options, n_clicks, seq_type, num_bits, cutoff_freq, num_taps, children)
+
     
 #form and graphs laid out together
 app.layout = dbc.Container([
@@ -116,6 +141,12 @@ app.layout = dbc.Container([
                 html.Br(),
                 html.Center(dcc.Markdown(children="##### Three-Dimensional Representation:")),
                 html.Div(id="three_dim_graph", children = [dcc.Graph(figure={}, id="three_dim", style={'marginBottom': '30px'})]),
+                html.Center([
+                    dbc.Button("Imaginary-Z", color="secondary", id="imag_z", style={'marginRight': '5px'}),
+                    dbc.Button("Real-Z", color="secondary", id="real_z", style={'marginRight': '5px'}),
+                    dbc.Button("Imaginary-Real", color="secondary", id="imag_real"), #top view
+                    html.P(id = "tester", children=[]),
+                ]),
                 html.Br()
                 ], style = {'width': '80%'})
     ]),
