@@ -82,7 +82,7 @@ def create_dropdown(seq_type):
     prevent_initial_call=True
 )
 def forms_redirection(select_type_options, b1, b2, b3, b4, seq_type, num_bits, cutoff_freq, num_taps, children):
-    return populate_graphs(select_type_options, b1, b2, b3, b4, seq_type, num_bits, cutoff_freq, num_taps, children)
+    return populate_graphs(select_type_options, seq_type, num_bits, cutoff_freq, num_taps, children)
 
 ### CONTROL GRAPH CAMERA ANGLES ###
 

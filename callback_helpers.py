@@ -2,7 +2,7 @@ from views.views import get_lfm, get_bpsk, get_cw
 from dash import no_update, ctx
 
 #functions for callbacks in app.py (moved for clarity)
-def populate_graphs(select_type_options, b1, b2, b3, b4, seq_type, num_bits, cutoff_freq, num_taps, children):
+def populate_graphs(select_type_options,seq_type, num_bits, cutoff_freq, num_taps, children):
     triggered_id = ctx.triggered_id #determines which button was pressed 
     values = {} #dictionary of all input ids to values 
     #assign values from children and func depending on which wave form is inputted
