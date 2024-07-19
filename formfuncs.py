@@ -38,7 +38,7 @@ def generate_inputs_list(selected_type):
 page_title = dcc.Markdown(children = '# Waveform Visualization')
 
 select_type_options = dcc.RadioItems(
-    create_radio_list(), value='Continuous Wave', style={'fontSize': '18px', 'marginLeft': '10px', 'display': 'flex','justifyContent':'center', 'textAlign': 'center'}
+    create_radio_list(), value='Continuous Wave', style={'fontSize': '20px', 'marginLeft': '10px','justifyContent':'center', 'textAlign': 'center', 'padding': '10px'}
 )
 
 #layout of the form (left component)
