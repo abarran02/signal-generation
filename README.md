@@ -36,7 +36,7 @@ python app.py
 ```
 The application will be available on the default port 5000.
 
-To display the Dash version, add /dash/ to the end of the localhost:
+To display the Dash version, add \dash\ to the end of the localhost:
 ```sh
 \dash\
 ```
