@@ -1,31 +1,50 @@
 from datetime import datetime
 from io import BytesIO
 
+import base64
 import matplotlib
 import numpy as np
 import pandas as pd
 import plotly.express as px
-from flask import Response, render_template, send_file
+from flask import Response, render_template, send_file, jsonify
 from matplotlib.figure import Figure
 from numpy.typing import NDArray
 from plotly_resampler import register_plotly_resampler
+from dash import dcc
+
 
 from signal_utils.common.binary_file_ops import get_iq_bytes
+
 
 register_plotly_resampler(mode='auto')  # improves plotly scalability
 matplotlib.use("agg")  # limit matplotlib to png backend
 
+#make json serializable version of original send_bytes_response
 def send_bytes_response(pulse_bytes: bytes, prefix: str):
     # get current time for file naming
     now = datetime.now()
     formatted_time = now.strftime("%Y%m%d_%H%M%S")
+
+    encode_bytes = base64.b64encode(pulse_bytes).decode('utf-8')
+    response = { #create a dictionary with needed contents 
+        'content': encode_bytes,
+        'filename': f"{prefix}_{formatted_time}.sc16",
+    }
+    return response
+'''
+   def send_bytes_response(pulse_bytes: bytes, prefix: str):
+    # get current time for file naming
+    now = datetime.now()
+    formatted_time = now.strftime("%Y%m%d_%H%M%S")
+    print("sending file...")
 
     return send_file(
         BytesIO(pulse_bytes),
         mimetype="application/octet-stream",
         as_attachment=True,
         download_name=f"{prefix}_{formatted_time}.sc16"
-    )
+    ) 
+'''
 
 def send_interactive_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str):
     df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
@@ -34,10 +53,12 @@ def send_interactive_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16],
         y=df.columns,
         title=f"{abbr.upper()} Graph"
     )
-    fig.update_layout(xaxis_title="Time (s)", yaxis_title="Amplitude", height=750)
-    fig_html = fig.to_html()
+    fig.update_layout(xaxis_title="Time (s)", yaxis_title="Amplitude", height=750),
+    fig.update_layout(legend=dict(yanchor="top", y=1, xanchor="left", x=1)) 
+    return dcc.Graph(figure=fig)
+# fig_html = fig.to_html()
 
-    return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
+#    return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
 
 def send_plot_image(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str, axes: str):
     fig = Figure()
@@ -68,7 +89,7 @@ def send_plot_image(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: 
         mimetype="image/png"
     )
 
-def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str):
+def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str, view: str):
     df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
     fig = px.scatter_3d(df,
                         x = df.loc[:, "real"],
@@ -76,14 +97,26 @@ def create_three_dim_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16],
                         z = t,
                         title = "3D Representation of " + abbr.upper()
                         )
-
+    camera = dict( #default camera views 
+        eye= determine_cam_eye(view) 
+        )
     fig.update_layout(height = 800)
+    fig.update_layout(scene_camera=camera)
     fig.update_traces(marker=dict(size=5)) #size of markers
-    fig_html = fig.to_html()
+    return dcc.Graph(figure=fig)
 
-    return render_template("graph.jinja", fig_html=fig_html, title=f"{abbr.upper()} Graph")
+def determine_cam_eye(view):
+    if view == "default":
+        return dict(x=1.25, y=1.25, z=1.25)
+    elif view == "real_z":
+        return dict(x=0., y=2.5, z=0.)
+    elif view == "imag_z":
+        return dict(x=2.5, y=0., z=0.)
+    elif view == "imag_real":
+        return dict(x=0., y=0., z=2.5)
 
-def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str, axes: str, num_pulses: int, is_bpsk: bool) -> Response:
+ 
+def output_cases(pulse: NDArray[np.complex64], form: str, tstop: float, abbr: str, axes: str, num_pulses: int, is_bpsk: bool, view: str) -> Response:
     if form == "sc16":
         pulse_bytes = get_iq_bytes(pulse)
         return send_bytes_response(pulse_bytes, abbr)
@@ -98,4 +131,4 @@ def output_cases(pulse: NDArray[np.complex_], form: str, tstop: float, abbr: str
 
     elif form == "threeDim":
         t = np.linspace(0, tstop*num_pulses, pulse.shape[0])
-        return create_three_dim_graph(pulse, t, abbr)
+        return create_three_dim_graph(pulse, t, abbr, view)
