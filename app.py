@@ -16,13 +16,6 @@ server.register_blueprint(wave_views)
 @server.route('/')
 def index():
     return redirect('/dash')
-    html_template = "index.jinja"
-    forms_json = "templates/forms.json"
-    
-    with open(forms_json, "r") as f:
-        forms = json.load(f)
-
-    return render_template(html_template, forms=forms)
 
 #Dash app (accessible by adding /dash/ to end of generated url)
 app = Dash(server=server, external_stylesheets=[dbc.themes.SLATE], prevent_initial_callbacks=True, suppress_callback_exceptions=True)
@@ -142,4 +135,3 @@ app.layout = dbc.Container([
 
 if __name__ == "__main__":
    app.run(port=5000, debug=True)
-   #app.run_server(port=5000, debug=True) #default into original webpage

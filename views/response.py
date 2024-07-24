@@ -31,20 +31,6 @@ def send_bytes_response(pulse_bytes: bytes, prefix: str):
         'filename': f"{prefix}_{formatted_time}.sc16",
     }
     return response
-'''
-   def send_bytes_response(pulse_bytes: bytes, prefix: str):
-    # get current time for file naming
-    now = datetime.now()
-    formatted_time = now.strftime("%Y%m%d_%H%M%S")
-    print("sending file...")
-
-    return send_file(
-        BytesIO(pulse_bytes),
-        mimetype="application/octet-stream",
-        as_attachment=True,
-        download_name=f"{prefix}_{formatted_time}.sc16"
-    ) 
-'''
 
 def send_interactive_graph(pulse: NDArray[np.complex64], t: NDArray[np.float16], abbr: str):
     df = pd.DataFrame({"real": np.real(pulse), "imag": np.imag(pulse)})
@@ -116,7 +102,7 @@ def determine_cam_eye(view):
         return dict(x=0., y=0., z=2.5)
 
  
-def output_cases(pulse: NDArray[np.complex64], form: str, tstop: float, abbr: str, axes: str, num_pulses: int, is_bpsk: bool, view: str) -> Response:
+def output_cases(pulse: NDArray[np.complex64], form: str, tstop: float, abbr: str, axes: str, num_pulses: int, view: str) -> Response:
     if form == "sc16":
         pulse_bytes = get_iq_bytes(pulse)
         return send_bytes_response(pulse_bytes, abbr)
