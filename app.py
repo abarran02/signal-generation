@@ -3,7 +3,7 @@ import plotly.graph_objs as go
 
 from dash import Dash, html, dcc, Output, Input, State #gives interactivity
 import dash_bootstrap_components as dbc
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 
 from views import wave_views
 from views.views import get_lfm, get_bpsk
@@ -15,13 +15,7 @@ server.register_blueprint(wave_views)
 
 @server.route('/')
 def index():
-    html_template = "index.jinja"
-    forms_json = "templates/forms.json"
-    
-    with open(forms_json, "r") as f:
-        forms = json.load(f)
-
-    return render_template(html_template, forms=forms)
+    return redirect('/dash')
 
 #Dash app (accessible by adding /dash/ to end of generated url)
 app = Dash(server=server, external_stylesheets=[dbc.themes.SLATE], prevent_initial_callbacks=True, suppress_callback_exceptions=True)
@@ -141,4 +135,3 @@ app.layout = dbc.Container([
 
 if __name__ == "__main__":
    app.run(port=5000, debug=True)
-   #app.run_server(port=5000, debug=True) #default into original webpage
