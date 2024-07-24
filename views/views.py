@@ -18,7 +18,7 @@ def get_cw(data, form, view):
     schema = CWSchema()
 
     try:
-        data["form"] = form #hardcoded to 2d interactive for now
+        data["form"] = form 
         data["axes"] = '' #dummy param
         data = schema.dump(data)
         convert_cw_types(data)
@@ -35,7 +35,7 @@ def get_cw(data, form, view):
 def get_lfm(data, form, view):
     schema = LFMSchema()
     try:
-        data["form"] = form #hardcoded to 2d interactive for now
+        data["form"] = form 
         data["axes"] = '' #dummy param
         data = schema.dump(data)
         convert_lfm_types(data)
@@ -52,7 +52,7 @@ def get_lfm(data, form, view):
 def get_bpsk(data, form, view):
     schema = BPSKSchema()
     try:
-        data["form"] = form #hardcoded to 2d interactive for now
+        data["form"] = form 
         data["axes"] = '' #dummy param
         #data = schema.dump(data)
         convert_bpsk_types(data)
