@@ -51,7 +51,6 @@ The following parameters are used for all API endpoints:
 | --- | --- | --- | --- |
 | sample_rate | int | Yes | Waveform sample rate in hertz |
 | form   | string | Yes | Output format either `sc16`, `png`, `graph`, or `threeDim` |
-| axes | string | No | For `png` output only, specify `IQvT` or `IvQ` |
 
 All of the following endpoint-specific parameters are required.
 Requests missing any parameter will return an HTTP `400 Bad Request`. Available endpoints include:
